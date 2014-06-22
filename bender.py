@@ -1,4 +1,5 @@
 #!/usr/bin/python
+#
 """Implement a simple database representing network policy
 This allows the definition of "host groups" and "service templates"
 which allow policy statements like "Allow Workstations to access 
