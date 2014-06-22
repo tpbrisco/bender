@@ -1,6 +1,9 @@
 #!/usr/bin/python
 #
+# Simple version
 # Generate IOS syntax for the policy named on the command line
+# An advanced version might notice adjacent IP addresses and adjust the mask accordingly
+#                              or might notice adjacent port numbers, and adjust accordingly
 
 import os, sys
 import csv, getopt
@@ -22,6 +25,7 @@ last_name = ''
 for sdp in sdp_groups.select(group=policy):
     if sdp['name'] != last_name:
         print "no ip access-list %s" % (sdp['name'])
+        print "ip access-list extended %s remark policy %s" % (sdp['name'], sdp['group'])
         last_name = sdp['name']
-    print "ip access-list %s permit %s %s %s/%s" % (
-        last_name, sdp['source_ip'], sdp['destination_ip'], sdp['port'], sdp['protocol'])
+    print "ip access-list extended %s permit %s host %s host %s eq %s" % (
+        last_name, sdp['protocol'], sdp['source_ip'], sdp['destination_ip'], sdp['port'])
