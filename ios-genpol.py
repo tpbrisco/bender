@@ -23,5 +23,5 @@ for sdp in sdp_groups.select(group=policy):
     if sdp['name'] != last_name:
         print "no ip access-list %s" % (sdp['name'])
         last_name = sdp['name']
-    print "ip address-list %s permit %s %s %s/%s" % (
+    print "ip access-list %s permit %s %s %s/%s" % (
         last_name, sdp['source_ip'], sdp['destination_ip'], sdp['port'], sdp['protocol'])
