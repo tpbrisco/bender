@@ -1,0 +1,7 @@
+name,port,protocol,transport,owner,rp
+email,25,tcp,smtp,brisco,brisco
+email,25,udp,smtp,brisco,brisco
+email,465,tcp,smtp,brisco,brisco
+domain,53,tcp,dns,brisco,brisco
+domain,53,udp,dns,brisco,brisco
+time,123,udp,ntp,brisco,brisco

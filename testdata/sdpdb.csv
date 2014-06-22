@@ -1,0 +1,7 @@
+group,name,source,source_ip,destination,destination_ip,port,protocol
+,workstation_smtp-servers_smtp,ghidora,192.168.5.8,dracula,192.168.5.1,25,tcp
+,workstation_smtp-servers_smtp,ghidora,192.168.5.8,dracula,192.168.5.125,udp
+,workstation_smtp-servers_smtp,mothra,192.168.6.139,ghidora,192.168.5.8,25,tcp
+,workstation_smtp-servers_smtp,mothra,192.168.6.139,ghidora,192.168.5.8,25,udp
+,workstation_smtp-servers_smtp,mothra,192.168.6.139,dracula,192.168.5.125,tcp
+,workstation_smtp-servers_smtp,mothra,192.168.6.139,dracula,192.168.5.125,udp

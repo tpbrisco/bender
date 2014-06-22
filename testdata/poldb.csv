@@ -1,0 +1,3 @@
+name,source,destination,template
+forward_mail,workstation,server,mail
+sync_time,workstation,server,time

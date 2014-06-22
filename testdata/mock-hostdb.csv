@@ -1,0 +1,11 @@
+name,member,type,owner,rp
+router,dracula,dmz,brisco,brisco
+server,rodan,internal,brisco,brisco
+server,ghidora,internal,brisco,brisco
+mail_gateway,ghidora,dmz,brisco,brisco
+mail_gateway,dracula,dmz,brisco,brisco
+router,nnetgear,dmz,brisco,brisco
+workstation,ghidora,none,brisco,brisco
+proxy,nnetgear,dmz,brisco,brisco
+proxy,dracula,dmz,brisco,brisco
+workstation,whitebox,none,brisco,brisco
