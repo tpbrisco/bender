@@ -22,7 +22,7 @@ A simple policy might include
 	Name	Port	Protocol	Transport	Owner	Risk Person
 	domain	53	tcp		dns		daffy	walt
 	domain	53	udp		dns		daffy	walt
-	time		123	udp		ntp		scrooge	walt
+	time	123	udp		ntp		scrooge	walt
 
   Policy Groups
   	Name		Source		Destination	Template
@@ -102,9 +102,10 @@ But I also need to ...
 
 	  Requred fields for databases (the column names are capitalized)-
 	  * Host Groups: NAME of the group, and MEMBER of the group
-	  * Service Templates: NAME of the service, and PORT that it uses, PROTOCOL
+	  * Service Templates: NAME of the service, and PORT that it uses,
+	    	    PROTOCOL and DIRECTION
           * Policy Database: NAME, SOURCE, DESTINATION, TEMPLATE 
-	  * SDP Database: GROUP, NAME, SOURCE, DESTINATION,
+	  * SDP Database: GROUP, NAME, SOURCE, DESTINATION, DIRECTION
 				PORT, PROTOCOL, SOURCE_IP, DESTINATION_IP
 	
 What does it work on?
