@@ -110,6 +110,7 @@ def delete_service_line():
                    port=request.form['port'],
                    protocol=request.form['protocol'],
                    transport=request.form['transport'],
+                   direction=request.form['direction'],
                    owner=request.form['owner'],
                    rp=request.form['rp'])
     for s in sl:
@@ -122,9 +123,10 @@ def add_service():
     port = request.form['port']
     protocol = request.form['protocol']
     transport = request.form['transport']
+    direction = request.form['direction']
     owner = request.form['owner']
     rp = request.form['rp']
-    sg.add(name=name, port=port, protocol=protocol, transport=transport, owner=owner, rp=rp)
+    sg.add(name=name, port=port, protocol=protocol, direction=direction, transport=transport, owner=owner, rp=rp)
     return redirect(url_for('indexHostgroups')+"#services")
 
 @b_ui.route('/saveservice', methods=['POST'])
@@ -196,7 +198,15 @@ def render_sdp():
                         sdp.add(group=p['name'], name=name,
                                 source=src['member'], source_ip=source_ip,
                                 destination=dst['member'], destination_ip=destination_ip,
+                                direction=svc['direction'],
                                 port=svc['port'], protocol=svc['protocol'])
+    sdp.save('testdata/mock-sdpdb.csv')
+    return redirect(url_for('indexHostgroups')+"#renderedpolicies")
+
+@b_ui.route('/resetsdp', methods=['POST'])
+def reset_sdp():
+    # just erase the whole thing - usually done prior to a full recompute
+    sdp.zero()
     sdp.save('testdata/mock-sdpdb.csv')
     return redirect(url_for('indexHostgroups')+"#renderedpolicies")
 

@@ -291,7 +291,7 @@ class policy_render:
         self._sdp_fields = dreader.fieldnames
         
         for req_field in ['group', 'source', 'destination', 'source_ip', \
-                          'destination_ip', 'port', 'protocol']:
+                          'destination_ip', 'direction','port', 'protocol']:
             if not req_field in self._sdp_fields:
                 print >>sys.stderr, "Need: ",req_field,"defined in the database"
                 sys.exit(1)
@@ -313,6 +313,11 @@ class policy_render:
     def fields(self):
         """Return the relevant member fields, in order"""
         return (self._sdp_fields)
+
+    def zero(self):
+        """Reset/clear the rendered policy data"""
+        while len(self._sdp_groups):
+            self._sdp_groups.pop()
 
     def save(self, database_name):
         """Persist (commit) rendered policy to the database indicated"""
