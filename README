@@ -13,8 +13,8 @@ A Policy groups define the current and allowable sets of rules
 A simple policy might include
   Host Groups
        Group		Member	Type	Owner	Risk Person
-       workstation	huey	user		walt		walt
-       workstation	louie	user		walt		walt
+       workstation	huey	user	walt	walt
+       workstation	louie	user	walt	walt
        server		pluto	genpop	scrooge	walt
        server		goofy	genpop	scrooge	walt
 
