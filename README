@@ -123,7 +123,14 @@ Getting Started
 
  Bender is written as a python class library - but includes some example code
  at the bottom.  There is also a "bender_ui.py" written using Flask that can
- help to understand the interworkings a bit better.
+ help to understand the interworkings a bit better.  Simply run the
+ "bender_ui" program, and point your browser at localhost:5000 to run through
+ a demo.
+ 
+ You can use the sample "ios-genpol" and "asa-genpol" to generate
+ configuration for specific devices.  For example; the example data defines a
+ policy "basic_service" - running "ios-genpol" with this policy name will
+ generate IOS access lists to permit those services.
 	 
 
 ;; Local Variables:
