@@ -37,3 +37,12 @@ basic_service,workstation_proxy_web,whitebox,192.168.6.3,nnetgear,192.168.6.2,u,
 basic_service,workstation_proxy_web,whitebox,192.168.6.3,nnetgear,192.168.6.2,u,443,tcp
 basic_service,workstation_proxy_web,whitebox,192.168.6.3,dracula,192.168.5.13,u,80,tcp
 basic_service,workstation_proxy_web,whitebox,192.168.6.3,dracula,192.168.5.13,u,443,tcp
+fake,workstation_mail_gateway_email,whitebox,192.168.6.3,ghidora,192.168.5.8,,25,tcp
+fake,workstation_mail_gateway_email,whitebox,192.168.6.3,ghidora,192.168.5.8,,25,udp
+fake,workstation_mail_gateway_email,whitebox,192.168.6.3,ghidora,192.168.5.8,,465,tcp
+fake,workstation_mail_gateway_email,whitebox,192.168.6.3,dracula,192.168.5.13,,25,tcp
+fake,workstation_mail_gateway_email,whitebox,192.168.6.3,dracula,192.168.5.13,,25,udp
+fake,workstation_mail_gateway_email,whitebox,192.168.6.3,dracula,192.168.5.13,,465,tcp
+fake,workstation_mail_gateway_email,ghidora,192.168.5.8,dracula,192.168.5.13,,25,tcp
+fake,workstation_mail_gateway_email,ghidora,192.168.5.8,dracula,192.168.5.13,,25,udp
+fake,workstation_mail_gateway_email,ghidora,192.168.5.8,dracula,192.168.5.13,,465,tcp
