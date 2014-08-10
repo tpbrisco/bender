@@ -11,6 +11,10 @@ import os, sys
 import getopt
 import bender
 
+if len(sys.argv) < 2:
+    print "Usage: asa-genpol <policy name>"
+    sys.exit(1)
+
 policy = sys.argv[1]
 
 p_groups = bender.policy_group('testdata/mock-poldb.csv')
