@@ -1,28 +1,53 @@
 
 Bender
 
-A better way to manage firewall rules - by managing policy instead
+Manage your firewall rules in a better way - track and maintain your policy.
 
-Say
+Most organizations try to manage firewall rules by involving their users in
+the low-level details, use technical staff to formulate, validate and assess
+the rules, manually determine where they should be implemented, craft the
+syntax, and install them during an infrequent maintenance window.  Arcane
+naming schemes are used to try and associate these low-level details with
+applications, customers are tracked in spreadsheets or sharepoint.  What is
+manageable chaos in small environments, quickly turns into a indecipherable
+mess of device configuration, and staff lose track of why or how a rule is
+used, why it is in the firewall, when or if it can be removed - and the sense
+of security is rapidly eroded, and the business cannot accomplish their goals.
+
+The fundamental failures are (a) Policy (the high level statements) is lost in
+the device rules (the low level syntax), and (b) The devices implementing the
+rules are the wrong place to "store" all this information.
+
+If the above sounds like your current experience with firewalls, you should
+consider the approach here.
+
+Instead of the typical "access-list permit" approach, instead think of
    "TheseHosts" want to communicate to "ThoseHosts" for "ThisService"
+
+By understanding the systems involved (the "thesehosts" and "thosehosts") and
+the services provided by the applications (the "thisservice"), the rest what
+is needed can be easily derived, changed, updated and validated -- all before
+you even lay a hand on a firewall.
+
+"TheseHosts" want to communicate to "ThoseHosts" for "ThisService"
 
 Groups Of Hosts leverage a Service Template to gain access to Groups Of
 Hosts.
-A Policy groups define the current and allowable sets of rules
+A Policy group defines the current and allowable sets of rules
 
 A simple policy might include
   Host Groups
-       Group		Member	Type	Owner	Risk Person
-       workstation	huey	user	walt	walt
-       workstation	louie	user	walt	walt
-       server		pluto	genpop	scrooge	walt
-       server		goofy	genpop	scrooge	walt
+       Group		Member	Type	Owner
+       workstation	huey	user	walt
+       workstation	louie	user	walt
+       server		pluto	genpop	jerri
+       server		goofy	genpop	jerri
 
   Service Template
-	Name	Port	Protocol	Transport	Owner	Risk Person
-	domain	53	tcp		dns		daffy	walt
-	domain	53	udp		dns		daffy	walt
-	time	123	udp		ntp		scrooge	walt
+	Name	Port	Protocol	Transport	Owner
+	domain	53	tcp		dns		daffy
+	domain	53	udp		dns		daffy
+	time	123	udp		ntp		scrooge
 
   Policy Groups
   	Name		Source		Destination	Template
@@ -46,11 +71,12 @@ Day to Day Policy Management:
     The policy statement (the "allow TheseHosts to access ThoseHosts for
     ThatService") is managed in the policy database.
 
-    By "resolving" the policy (using the host and service templates), a set of
-    end-to-end permissions can be determined - this looks a lot more like the
-    traditional <source,destination,protocol> tuples that people who manage
-    firewalls are used to seeing.  However, these only describe the end-to-end
-    state, and don't describe all devices in the path.
+    By "rendering" the policy (using the host and service templates) to the
+    source, destination and protocols, a set of end-to-end permissions can be
+    determined - this looks a lot more like the traditional
+    <source,destination,protocol> tuples that people who manage firewalls are
+    used to seeing.  However, these only describe the end-to-end state, and
+    don't describe all devices in the path.
 
     The rendered policy (or "SDP" - source/destination/protocol) rules can
     then be mapped to the network topology to determine the actual
@@ -84,8 +110,8 @@ But I also need to ...
     	 	    dates.
 
 	owners and risk party - track the owner of the server or service
-    	       	   seperately from the party that signs off on the risk.  This
-    	       	   is the bases for the control gates in workflows to allow
+    	       	   separately from the party that signs off on the risk.  This
+    	       	   is the bases for the control gates in work-flows to allow
     	       	   sign-offs and cross-checking and audit functionality.
 
      Some required fields:
@@ -100,7 +126,7 @@ But I also need to ...
 	  protocol (tcp or udp), but those would be necessary to generate
 	  valid ACLs.
 
-	  Requred fields for databases (the column names are capitalized)-
+	  Required fields for databases (the column names are capitalized)-
 	  * Host Groups: NAME of the group, and MEMBER of the group
 	  * Service Templates: NAME of the service, and PORT that it uses,
 	    	    PROTOCOL and DIRECTION
@@ -108,7 +134,7 @@ But I also need to ...
 	  * SDP Database: GROUP, NAME, SOURCE, DESTINATION, DIRECTION
 				PORT, PROTOCOL, SOURCE_IP, DESTINATION_IP
 	
-What does it work on?
+Does it work on a Juniper/Cisco/etc?
 
      Since only the data is stored and manipulated, the last steps of
      generating valid configuration involve (a) determining the topology and
@@ -123,7 +149,7 @@ Getting Started
 
  Bender is written as a python class library - but includes some example code
  at the bottom.  There is also a "bender_ui.py" written using Flask that can
- help to understand the interworkings a bit better.  Simply run the
+ help to understand the inter-workings a bit better.  Simply run the
  "bender_ui" program, and point your browser at localhost:5000 to run through
  a demo.
  
