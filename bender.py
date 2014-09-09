@@ -297,7 +297,7 @@ class policy_render:
         self._sdp_fields = dreader.fieldnames
 
         for req_field in ['group', 'source', 'destination', 'source_ip', \
-                          'destination_ip', 'direction', 'port', 'protocol']:
+                          'destination_ip', 'bidir', 'port', 'protocol']:
             if not req_field in self._sdp_fields:
                 print >>sys.stderr, "Need: ", req_field, "defined in the database"
                 sys.exit(1)

@@ -110,7 +110,7 @@ def delete_service_line():
                    port=request.form['port'],
                    protocol=request.form['protocol'],
                    transport=request.form['transport'],
-                   direction=request.form['direction'],
+                   bidir=request.form['bidir'],
                    owner=request.form['owner'],
                    rp=request.form['rp'])
     for s in sl:
@@ -123,10 +123,10 @@ def add_service():
     port = request.form['port']
     protocol = request.form['protocol']
     transport = request.form['transport']
-    direction = request.form['direction']
+    bidir = request.form['bidir']
     owner = request.form['owner']
     rp = request.form['rp']
-    sg.add(name=name, port=port, protocol=protocol, direction=direction,
+    sg.add(name=name, port=port, protocol=protocol, bidir=bidir,
            transport=transport, owner=owner, rp=rp)
     return redirect(url_for('index_hostgroups')+"#services")
 
@@ -199,7 +199,7 @@ def render_sdp():
                         sdp.add(group=p['name'], name=name,
                                 source=src['member'], source_ip=source_ip,
                                 destination=dst['member'], destination_ip=destination_ip,
-                                direction=svc['direction'],
+                                bidir=svc['bidir'],
                                 port=svc['port'], protocol=svc['protocol'])
     sdp.save('testdata/mock-sdpdb.csv')
     return redirect(url_for('index_hostgroups')+"#renderedpolicies")

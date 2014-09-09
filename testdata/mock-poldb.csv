@@ -1,7 +1,7 @@
-name,source,destination,template
-basic_service,workstation,server,domain
-basic_service,workstation,server,time
-basic_service,workstation,mail_gateway,email
-forward_email,workstation,mail_gateway,email
-basic_service,workstation,proxy,web
-sync_time,workstation,server,time
+name,source,destination,template,bidir
+basic_service,workstation,server,domain,FALSE
+basic_service,workstation,server,time,FALSE
+basic_service,workstation,mail_gateway,email,TRUE
+forward_email,workstation,mail_gateway,email,TRUE
+basic_service,workstation,proxy,web,TRUE
+sync_time,workstation,server,time,

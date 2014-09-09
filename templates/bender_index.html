@@ -46,14 +46,14 @@
   <a name="services"></a>
   <h1>Service Templates</h1>
   <table>
-    <thead><td>Name</td><td>Port</td><td>Protocol</td><td>Transport</td><td>Direction</td><td>Owner</td><td>RP</td><td>Service</td><td>Line</td></thead>
+    <thead><td>Name</td><td>Port</td><td>Protocol</td><td>Transport</td><td>Bidir</td><td>Owner</td><td>RP</td><td>Service</td><td>Line</td></thead>
     {% for svc in svcinfo %}
     <tr>
       <td>{{svc.name}}</td>
       <td>{{svc.port}}</td>
       <td>{{svc.protocol}}</td>
       <td>{{svc.transport}}</td>
-      <td>{{svc.direction}}</td>
+      <td>{{svc.bidir}}</td>
       <td>{{svc.owner}}</td>
       <td>{{svc.rp}}</td>
       <td><form action="deletesvc" method="post">
@@ -67,7 +67,7 @@
 	  <input type="hidden" value="{{svc.port}}" name="port">
 	  <input type="hidden" value="{{svc.protocol}}" name="protocol">
 	  <input type="hidden" value="{{svc.transport}}" name="transport">
-	  <input type="hidden" value="{{svc.direction}}" name="direction">
+	  <input type="hidden" value="{{svc.bidir}}" name="bidir">
 	  <input type="hidden" value="{{svc.owner}}" name="owner">
 	  <input type="hidden" value="{{svc.rp}}" name="rp">
 	</form>
@@ -81,7 +81,7 @@
     <input type="text" name="port" value="service port">
     <input type="text" name="protocol" value="service protocol">
     <input type="text" name="transport" value="service transport">
-    <input type="text" name="direction" value="service direction">
+    <input type="text" name="bidir" value="service bi-directional">
     <input type="text" name="owner" value="service owner">
     <input type="text" name="rp" value="service rp">
   </form>
@@ -131,7 +131,7 @@
   <a name="renderedpolicies"></a>
   <h1>Rendered Policies</h1>
   <table>
-    <thead><td>Group</td><td>Name</td><td>Source</td><td>Source IP</td><td>Dest</td><td>Dest IP</td><td>Direction</td><td>Port</td><td>Protocol</td></thead>
+    <thead><td>Group</td><td>Name</td><td>Source</td><td>Source IP</td><td>Dest</td><td>Dest IP</td><td>Bidir</td><td>Port</td><td>Protocol</td></thead>
     {% for sdp in sdpinfo %}
     <tr>
       <td>{{sdp.group}}</td>
@@ -140,7 +140,7 @@
       <td>{{sdp.source_ip}}</td>
       <td>{{sdp.destination}}</td>
       <td>{{sdp.destination_ip}}</td>
-      <td>{{sdp.direction}}</td>
+      <td>{{sdp.bidir}}</td>
       <td>{{sdp.port}}</td>
       <td>{{sdp.protocol}}</td>
     <tr>

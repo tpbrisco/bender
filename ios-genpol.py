@@ -43,14 +43,14 @@ for sdp in sdp_groups.select(group=policy):
         output_out = "no ip access-list %s\n" % (sdp['name'])
         output_out = output_out + "ip access-list extended %s remark policy %s\n" % (sdp['name'], sdp['group'])
         # start forming the reverse policy, if we need it
-        if sdp['direction'] == 'b':  # bidirectional connection - we need to reverse it
+        if sdp['bidir'] == 'TRUE':  # bidirectional connection - we need to reverse it
             output_in = "no ip access-list %s_in\n" % (sdp['name'])
             output_in = output_in + "ip access-list extended %s_in remark policy %s\n" % (sdp['name'], sdp['group'])
         last_name = sdp['name']
     output_out = output_out + "ip access-list extended %s permit %s host %s host %s eq %s\n" % (
         last_name, sdp['protocol'], sdp['source_ip'], sdp['destination_ip'], sdp['port'])
     # if we need a "bidirectional" (direction=b) entry, form the reverse
-    if sdp['direction'] == 'b':
+    if sdp['bidir'] == 'TRUE':
         # note we just reverse the source/destination for this
         output_in = output_in + "ip access-list extended %s permit %s host %s host %s eq %s\n" % (
             last_name,sdp['protocol'],sdp['destination_ip'],sdp['source_ip'], sdp['port'])

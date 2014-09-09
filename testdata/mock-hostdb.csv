@@ -9,4 +9,5 @@ workstation,ghidora,none,brisco,brisco
 proxy,nnetgear,dmz,brisco,brisco
 proxy,dracula,dmz,brisco,brisco
 workstation,whitebox,none,brisco,brisco
+workstation,ghidora,none,brisco,tomoso
 workstation,ghidora,none,tomoso,tomoso
