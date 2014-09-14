@@ -11,3 +11,5 @@ proxy,dracula,dmz,brisco,brisco
 workstation,whitebox,none,brisco,brisco
 workstation,ghidora,none,brisco,tomoso
 workstation,ghidora,none,tomoso,tomoso
+mail_gateway,ghidora.v6,dmz,brisco,brisco
+mail_gateway,dracula.v6,dmz,brisco,brisco

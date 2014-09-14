@@ -20,6 +20,16 @@ sg = bender.service_template('testdata/mock-svcdb.csv')
 pg = bender.policy_group('testdata/mock-poldb.csv')
 sdp = bender.policy_render('testdata/mock-sdpdb.csv')
 
+# gethostaddr - similar to socket.gethostbyname() - but use getaddrinfo() to deal
+# with IPv6 addresses
+def gethostaddr(name):
+    h_infos = socket.getaddrinfo(name,None,0,0,socket.SOL_TCP)
+    if len(h_infos) < 0:
+        raise
+    # go for the first item returned in the array
+    print "Name",name,"address",h_infos[0][4][0]
+    return h_infos[0][4][0]
+
 @b_ui.route('/index')
 @b_ui.route('/')
 def index_hostgroups():
@@ -189,8 +199,8 @@ def render_sdp():
                 for svc in sg.select(name=p['template']):
                     name = "%s_%s_%s" % (src['name'], dst['name'], svc['name'])
                     try:
-                        source_ip = socket.gethostbyname(src['member'])
-                        destination_ip = socket.gethostbyname(dst['member'])
+                        source_ip = gethostaddr(src['member'])
+                        destination_ip = gethostaddr(dst['member'])
                     except:
                         print "Error looking up", src['member'], "or", dst['member']
                         continue  # just skip it?

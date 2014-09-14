@@ -13,7 +13,7 @@ import sys
 import csv as _csv
 
 class host_group:
-    """host_group(database_name)
+    """host_group(table_name)
 
     A host_group as a name with a number of servers associated with it.
     Because this inspects the format of the database, it makes it easy to
@@ -25,8 +25,8 @@ class host_group:
     _host_groups = []  # empty list of host_group dictionaries
     _host_fields = ()     # set of field names
 
-    def __init__(self, database_name):
-        """Define the host group based on the fields in the database_name.
+    def __init__(self, table_name):
+        """Define the host group based on the fields in the table_name.
 
        Peeking into the database to get all columns; use the field names
         to generate a list of dictionary objects that can be managed.
@@ -34,7 +34,7 @@ class host_group:
 
         # Open, Peek into the CSV, and create DictReader
         try:
-            reader_fd = open(database_name, 'r')
+            reader_fd = open(table_name, 'r')
             dialect = _csv.Sniffer().sniff(reader_fd.read(1024))
             reader_fd.seek(0)
             dreader = _csv.DictReader(reader_fd, dialect=dialect)
@@ -53,10 +53,10 @@ class host_group:
             # assemble the arguments in the right order
             self._host_groups.append(row)
 
-    def save(self, database_name):
+    def save(self, table_name):
         """Persist (commit) changes to the database indicated"""
         fields = self._host_fields
-        w_fd = open(database_name, 'w')
+        w_fd = open(table_name, 'w')
         dw = _csv.DictWriter(w_fd, fields)
         dw.writeheader()
         for r in self._host_groups:
@@ -103,7 +103,7 @@ class host_group:
 
 #####
 class service_template:
-    """service_template(database_name)
+    """service_template(table_name)
 
     A service_template is a pattern representing the communications
     protocols needed by an application.  Only 'name', 'port' and 'protocol'
@@ -112,7 +112,7 @@ class service_template:
     _svc_groups = []  # empty list of host_group dictionaries
     _svc_fields = ()     # set of field names
 
-    def __init__(self, database_name):
+    def __init__(self, table_name):
         """Define the service_template based on the columns in the
         database.
 
@@ -121,7 +121,7 @@ class service_template:
 
         # Open, Peek into the CSV, and create DictReader
         try:
-            reader_fd = open(database_name, 'r')
+            reader_fd = open(table_name, 'r')
             dialect = _csv.Sniffer().sniff(reader_fd.read(1024))
             reader_fd.seek(0)
             dreader = _csv.DictReader(reader_fd, dialect=dialect)
@@ -140,10 +140,10 @@ class service_template:
             # assemble the arguments in the right order
             self._svc_groups.append(row)
 
-    def save(self, database_name):
+    def save(self, table_name):
         """Persist (commit) changes to the database indicated"""
         fields = self._svc_fields
-        w_fd = open(database_name, 'w')
+        w_fd = open(table_name, 'w')
         dw = _csv.DictWriter(w_fd, fields)
         dw.writeheader()
         for r in self._svc_groups:
@@ -186,7 +186,7 @@ class service_template:
 
 #####
 class policy_group:
-    """policy_group(database_name)
+    """policy_group(table_name)
 
     A policy group is a simple database of policy statements that use host
     groups and service templates defined in other bender calls.
@@ -198,15 +198,15 @@ class policy_group:
     _policy_groups = [] # empty list of policy statements
     _policy_fields = ()    # set of field names
 
-    def __init__(self, database_name):
-        """Define the policy group based on the fields in the database_name.
+    def __init__(self, table_name):
+        """Define the policy group based on the fields in the table_name.
 
         Peeking into the database to get all columns; use the field names
         to generate a list of dictionary objects that can be managed."""
 
         # Open, peek into the CSV and create DictReader
         try:
-            reader_fd = open(database_name, 'r')
+            reader_fd = open(table_name, 'r')
             dialect = _csv.Sniffer().sniff(reader_fd.read(1024))
             reader_fd.seek(0)
             dreader = _csv.DictReader(reader_fd, dialect=dialect)
@@ -218,17 +218,17 @@ class policy_group:
         for req_field in ['name', 'source', 'destination', 'template']:
             if not req_field in self._policy_fields:
                 print >>sys.stderr, "Required field", req_field, \
-                    "not seen in", database_name
+                    "not seen in", table_name
                 sys.exit(1)
 
         # Load the CSV into the _policy_groups list of dictionaries
         for row in dreader:
             self._policy_groups.append(row)
 
-    def save(self, database_name):
+    def save(self, table_name):
         """Persist (commit) changes to the database indicated"""
         fields = self._policy_fields
-        w_fd = open(database_name, 'w')
+        w_fd = open(table_name, 'w')
         dw = _csv.DictWriter(w_fd, fields)
         dw.writeheader()
         for r in self._policy_groups:
@@ -283,11 +283,11 @@ class policy_render:
     _sdp_groups = []  # empty list of sdp dictionaries
     _sdp_fields = ()     # set of field names
 
-    def __init__(self, database_name):
+    def __init__(self, table_name):
         """Define the rendered policies in the named database."""
 
         try:
-            sdp_fd = open(database_name, 'r')
+            sdp_fd = open(table_name, 'r')
             dialect = _csv.Sniffer().sniff(sdp_fd.read(1024))
             sdp_fd.seek(0)
             dreader = _csv.DictReader(sdp_fd, dialect=dialect)
@@ -325,10 +325,10 @@ class policy_render:
         while len(self._sdp_groups):
             self._sdp_groups.pop()
 
-    def save(self, database_name):
+    def save(self, table_name):
         """Persist (commit) rendered policy to the database indicated"""
         fields = self._sdp_fields
-        w_fd = open(database_name, 'w')
+        w_fd = open(table_name, 'w')
         dw = _csv.DictWriter(w_fd, fields)
         dw.writeheader()
         for r in self._sdp_groups:
