@@ -1,9 +1,9 @@
 name,port,protocol,transport,bidir,owner,rp
-email,25,tcp,smtp,TRUE,brisco,brisco
-email,25,udp,smtp,TRUE,brisco,brisco
-email,465,tcp,smtp,TRUE,brisco,brisco
-domain,53,tcp,dns,TRUE,brisco,brisco
-domain,53,udp,dns,TRUE,brisco,brisco
-time,123,udp,ntp,TRUE,brisco,brisco
-web,80,tcp,http,TRUE,brisco,brisco
-web,443,tcp,http,TRUE,brisco,brisco
+email,25,tcp,smtp,TRUE,tom,tom
+email,25,udp,smtp,TRUE,tom,tom
+email,465,tcp,smtp,TRUE,tom,tom
+domain,53,tcp,dns,TRUE,tom,tom
+domain,53,udp,dns,TRUE,tom,tom
+time,123,udp,ntp,TRUE,tom,tom
+web,80,tcp,http,TRUE,tom,tom
+web,443,tcp,http,TRUE,tom,tom
