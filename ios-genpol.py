@@ -23,6 +23,7 @@ policy_lines = p_groups.select(name=policy)
 if len(policy_lines) == 0:
     print "No policy",sys.argv[1]
     sys.exit(1)
+
 # then loop through all the S/D/P data for that group
 # we use "last_name" to determine when to do a "no ip accress list" statement.
 # This simply accrues output in an output buffer, and when "last_name" changes,
@@ -54,3 +55,8 @@ for sdp in sdp_groups.select(group=policy):
         # note we just reverse the source/destination for this
         output_in = output_in + "ip access-list extended %s permit %s host %s host %s eq %s\n" % (
             last_name,sdp['protocol'],sdp['destination_ip'],sdp['source_ip'], sdp['port'])
+
+if not output_out =="":
+    print output_out
+if not output_in == "":
+    print output_in
