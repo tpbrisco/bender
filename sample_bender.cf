@@ -1,0 +1,2 @@
+[database]
+URI=mysql://root:default@localhost/bender

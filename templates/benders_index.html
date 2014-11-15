@@ -1,0 +1,156 @@
+<!doctype html>
+<title>Bender</title>
+<link rel=stylesheet type=text/css
+      href="{{url_for('static', filename='style_bender.css')}}">
+<link rel="shortcut_icon"
+      href="{{url_for('static', filename='favicon.ico')}}">
+<div class=page>
+  <a name="groups"></a>
+  <h1>Host Groups</h1>
+  <table>
+    <thead><td>Group</td><td>Member</td><td>Type</td><td>Owner</td><td>RP</td><td>Group</td><td>Member</td></thead>
+    {% for group in groupinfo %}
+      <tr>
+	<td>{{group.hg_name}}</td>
+	<td>{{group.hg_member}}</td>
+	<td>{{group.hg_type}}</td>
+	<td>{{group.hg_owner}}</td>
+	<td>{{group.hg_rp}}</td>
+	<td><form action="delgroup" method="post">
+	    <input type="hidden" value="{{group.hg_name}}" name="group">
+	    <input type="submit" name="{{group.hg_name}}" value="delete">
+	    </form>
+	  </td>
+	<td><form action="delmember" method="post">
+	    <input type="hidden" value="{{group.hg_name}}" name="group">
+	    <input type="hidden" value="{{group.hg_member}}" name="member">
+	    <input type="submit" name="{{group.hg_member}}" value="delete">
+	    </form>
+	  </td>	
+      </tr>
+     {% endfor %}
+  </table>
+  <form action="addgroup" method="post">
+    <input type="submit" value="Add Group">
+    <input type="text" name="groupname" value="group name">
+    <input type="text" name="groupmember" value="member name">
+    <input type="text" name="grouptype" value="member type">
+    <input type="text" name="groupowner" value="member owner">
+    <input type="text" name="grouprp" value="member rp">
+  </form>
+  <hr>
+  <form action="savegroup" method="post">
+    <input type="submit" value="Save Groups">
+  </form>
+  <hr>
+  <a name="services"></a>
+  <h1>Service Templates</h1>
+  <table>
+    <thead><td>Name</td><td>Port</td><td>Protocol</td><td>Transport</td><td>Bidir</td><td>Owner</td><td>RP</td><td>Service</td><td>Line</td></thead>
+    {% for svc in svcinfo %}
+    <tr>
+      <td>{{svc.st_name}}</td>
+      <td>{{svc.st_port}}</td>
+      <td>{{svc.st_protocol}}</td>
+      <td>{{svc.st_transport}}</td>
+      <td>{{svc.st_bidir}}</td>
+      <td>{{svc.st_owner}}</td>
+      <td>{{svc.st_rp}}</td>
+      <td><form action="deletesvc" method="post">
+	  <input type="hidden" value="{{svc.st_name}}" name="name">
+	  <input type="submit" name="{{svc.st_name}}" value="delete">
+	</form>
+      </td>
+      <td><form action="deletesvcline" method="post">
+	  <input type="submit" name="{{svc.st_name}}" value="delete">
+	  <input type="hidden" value="{{svc.st_name}}" name="name">
+	  <input type="hidden" value="{{svc.st_port}}" name="port">
+	  <input type="hidden" value="{{svc.st_protocol}}" name="protocol">
+	  <input type="hidden" value="{{svc.st_transport}}" name="transport">
+	  <input type="hidden" value="{{svc.st_bidir}}" name="bidir">
+	  <input type="hidden" value="{{svc.st_owner}}" name="owner">
+	  <input type="hidden" value="{{svc.st_rp}}" name="rp">
+	</form>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+  <form action="addservice" method="post">
+    <input type="submit" value="Add Svc">
+    <input type="text" name="name" value="service name">
+    <input type="text" name="port" value="service port">
+    <input type="text" name="protocol" value="service protocol">
+    <input type="text" name="transport" value="service transport">
+    <input type="text" name="bidir" value="service bi-directional">
+    <input type="text" name="owner" value="service owner">
+    <input type="text" name="rp" value="service rp">
+  </form>
+  <hr>
+  <form action="saveservice" method="post">
+    <input type="submit" value="Save Services">
+  </form>
+  <hr>
+  <a name="policies"></a>
+  <h1>Policy Groups</h1>
+  <table>
+    <thead><td>Name</td><td>Source</td><td>Dest</td><td>Template</td><td>Policy</td><td>Line</td></thead>
+    {% for pol in polinfo %}
+    <tr>
+      <td>{{pol.p_name}}</td>
+      <td>{{pol.p_source}}</td>
+      <td>{{pol.p_destination}}</td>
+      <td>{{pol.p_template}}</td>
+      <td><form action="delpolicy" method="post">
+	  <input type="submit" name="{{pol.p_name}}" value="delete">
+	  <input type="hidden" value="{{pol.p_name}}" name="name">
+	  </form>
+      </td>
+      <td><form action="delpolicyline" method="post">
+	  <input type="submit" name="{{pol.p_name}}" value="delete">
+	  <input type="hidden" value="{{pol.p_name}}" name="name">
+	  <input type="hidden" value="{{pol.p_source}}" name="source">
+	  <input type="hidden" value="{{pol.p_destination}}" name="destination">
+	  <input type="hidden" value="{{pol.p_template}}" name="template">
+	</form>
+      </td>
+    <tr>
+      {% endfor %}
+  </table>
+  <form action="addpolicy" method="post">
+    <input type="submit" value="Add Policy">
+    <input type="text" name="name" value="policy name">
+    <input type="text" name="source" value="group source">
+    <input type="text" name="destination" value="group destination">
+    <input type="text" name="template" value="service template">
+  </form>
+  <hr>
+  <form action="savepolicy" method="post">
+    <input type="submit" value="Save Policies">
+  </form>
+  <hr>
+  <a name="renderedpolicies"></a>
+  <h1>Rendered Policies</h1>
+  <table>
+    <thead><td>Group</td><td>Name</td><td>Source</td><td>Source IP</td><td>Dest</td><td>Dest IP</td><td>Bidir</td><td>Port</td><td>Protocol</td></thead>
+    {% for sdp in sdpinfo %}
+    <tr>
+      <td>{{sdp.sdp_group}}</td>
+      <td>{{sdp.sdp_name}}</td>
+      <td>{{sdp.sdp_source}}</td>
+      <td>{{sdp.sdp_source_ip}}</td>
+      <td>{{sdp.sdp_destination}}</td>
+      <td>{{sdp.sdp_destination_ip}}</td>
+      <td>{{sdp.sdp_bidir}}</td>
+      <td>{{sdp.sdp_port}}</td>
+      <td>{{sdp.sdp_protocol}}</td>
+    <tr>
+      {% endfor %}
+  </table>
+  <form action="rendersdp" method="post">
+    <input type="submit" value="Re-render Policies">
+  </form>
+  <form action="resetsdp" method="post">
+    <input type="submit" value="Clear Policies">
+  </form>
+</div>
+  
