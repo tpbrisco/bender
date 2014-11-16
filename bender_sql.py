@@ -10,8 +10,8 @@ extensible to use more conventional databases.
 """
 
 import sys
-import csv as _csv
 import sqlalchemy as _sa
+import time
 
 class host_group:
     """host_group(table_name)
@@ -26,7 +26,7 @@ class host_group:
     _host_groups = []  # empty list of host_group dictionaries
     _host_fields = []     # empty list of field names in the dictionary
 
-    def __init__(self,  engine_uri, table_name):
+    def __init__(self, engine_uri, table_name):
         """Define the host group based on the fields in the table_name.
 
        Peeking into the database specified by the engine_uri to get all
@@ -41,21 +41,18 @@ class host_group:
             self.connection = self.engine.connect()
             self.hostgroups = _sa.Table(table_name, self.meta_data,
                                                        autoload=True, autoload_with=self.engine)
+            self.table_name = table_name
         except:
             raise
 
         # check to make sure that "name","member" at least exist
-        self._host_fields = [str(c).replace('hostgroups.','') for c in self.hostgroups.columns]
-        for req_field in ['hg_name', 'hg_member']:
+        self._host_fields = [str(c).replace(self.table_name + '.', '') \
+                             for c in self.hostgroups.columns]
+        for req_field in ['hg_name', 'hg_member', 'hg_valid_from', 'hg_valid_to']:
             if not req_field in self._host_fields:
-                print >>sys.stderr, "hostgroups: Need \"name\" and \"member\" columns"
+                print >>sys.stderr, "host_group needs", req_field, \
+                    "defined in table", self.table_name
                 sys.exit(1)
-
-        # don't need to load this into RAM - we can do a self.hostgroups.select() call
-        ## Load the CSV into the _host_groups list of dictionaries
-        ## for row in dreader:
-            ## assemble the arguments in the right order
-            ## self._host_groups.append(row)
 
     def save(self, table_name):
         """Persist (commit) changes to the database indicated"""
@@ -67,21 +64,26 @@ class host_group:
         exists = self.select(**kwargs)    # will match partial
         for e in exists:
             self.delete(e)
+        start_t = time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime())
+        kwargs['hg_valid_from'] = start_t
+        kwargs['hg_valid_to'] = '2038-01-01 00:00:00'  # close to maximum TIMESTAMP value
         i = self.hostgroups.insert(values=kwargs)
         return self.connection.execute(i)
-        # if not kwargs in self._host_groups:
-         #   self._host_groups.append(kwargs)
 
     def delete(self, d):
         """Delete the member from the database"""
+        end_t = time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime())
         a = self.__kwarg2sel(**d)
-        i = self.hostgroups.delete(a)
+        # i = self.hostgroups.delete(a)
+        i = self.hostgroups.update().where(a).values(hg_valid_to=end_t)
         return self.connection.execute(i)
 
     def len(self):
         """Return the number of overall members stored"""
+        now_t = "%s.hg_valid_from <= now() and %s.hg_valid_to >= now()" % \
+                (self.table_name, self.table_name)
         try:
-            i = self.hostgroups.count()
+            i = self.hostgroups.count().where(now_t)
         except _sa.exc.SQLAlchemyError as e:
             print e
             raise
@@ -90,18 +92,33 @@ class host_group:
 
     def __kwarg2sel(self, **kwargs):
         """Given a set of kwargs, convert to a select statement"""
-        a=''
-        andp=''
+        a = ''
+        andp = ''
         for k in kwargs:
-            a = a + andp + "hostgroups.%s = \'%s\'" % (k, kwargs[k])
-            andp=" and "
+            if not kwargs[k]:
+                continue
+            a = a + andp + "%s.%s = \'%s\'" % (self.table_name, k, kwargs[k])
+            andp = " and "
+        # use the time fields hg_valid_from and hg_valid_to
+        # a = a + andp + " hg_valid_from<=now() and hg_valid_to>=now()"
         return a
 
     def select(self, **kwargs):
         """Select a subset of members, selected by the field/value criteria"""
+        now_t = time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime())
         a = self.__kwarg2sel(**kwargs)
-        s = self.hostgroups.select().where(a)            
-        rows = self.connection.execute(s)
+        andp = ''
+        if len(a):
+            andp = " and "
+        # limit selects to current records
+        a = a + andp + "%s.hg_valid_from <= \'%s\' and %s.hg_valid_to > \'%s\'" % \
+            (self.table_name, now_t, self.table_name, now_t)
+        try:
+            s = self.hostgroups.select().where(a)
+            rows = self.connection.execute(s)
+        except OperationalError as o:
+            print o
+            raise
         r = []
         for row in rows:
             r.append(dict(row).copy())
@@ -142,14 +159,17 @@ class service_template:
             self.connection = self.engine.connect()
             self.services = _sa.Table(table_name, self.meta_data,
                                       autoload=True, autoload_with=self.engine)
+            self.table_name = table_name
         except:
             raise
 
         # check to make sure that "name" and "port" at least exist
-        self._svc_fields = [str(c).replace('service_templates.','') for c in self.services.columns]
-        for req_field in ['st_name', 'st_port']:
+        self._svc_fields = [str(c).replace(self.table_name + '.', '') \
+                            for c in self.services.columns]
+        for req_field in ['st_name', 'st_port', 'st_valid_from', 'st_valid_to']:
             if not req_field in self._svc_fields:
-                print >>sys.stderr, "service_templates needs \"st_name\" and \"st_member\" columns in service template"
+                print >>sys.stderr, "service_template needs", req_field, \
+                    "defined in table", self.table_name
                 sys.exit(1)
 
     def save(self, table_name):
@@ -161,19 +181,26 @@ class service_template:
         exists = self.select(**kwargs)    # will match partial
         for e in exists:
             self.delete(e)
+        start_t = time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime())
+        kwargs['st_valid_from'] = start_t
+        kwargs['st_valid_to'] = '2038-01-01 00:00:00'
         i = self.services.insert(values=kwargs)
         return self.connection.execute(i)
 
     def delete(self, d):
         """Delete the service template line from the database"""
+        end_t = time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime())
         a = self.__kwarg2sel(**d)
-        i = self.services.delete(a)
+        # i = self.services.delete(a)
+        i = self.services.update().where(a).values(st_valid_to=end_t)
         return self.connection.execute(i)
 
     def len(self):
         """Return the number of service lines (not templates) in the database"""
+        now_t = "%s.st_valid_from <= now() and %s.st_valid_to >= now()" % \
+                (self.table_name, self.table_name)
         try:
-            i = self.services.count()
+            i = self.services.count().where(now_t)
         except _sa.exc.SQLAlchemyError as e:
             print e
             raise
@@ -182,16 +209,26 @@ class service_template:
 
     def __kwarg2sel(self, **kwargs):
         """Given a set of kwargs, convert to a select statement"""
-        a=''
-        andp=''
+        a = ''
+        andp = ''
         for k in kwargs:
-            a = a + andp + "service_templates.%s = \'%s\'" % (k, kwargs[k])
-            andp=" and "
+            if not kwargs[k]:
+                continue
+            a = a + andp + "%s.%s = \'%s\'" % (self.table_name, k, kwargs[k])
+            andp = " and "
+        # a = a + andp + " st_valid_from<=now() and st_valid_to>=now()"
         return a
 
     def select(self, **kwargs):
         """Select a subset of services, indicated by the field/value criteria"""
+        now_t = time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime())
         a = self.__kwarg2sel(**kwargs)
+        andp = ''
+        if len(a):
+            andp = " and "
+        # limit searches to current records
+        a = a + andp + "%s.st_valid_from <= \'%s\' and %s.st_valid_to > \'%s\'" % \
+            (self.table_name, now_t, self.table_name, now_t)
         try:
             s = self.services.select().where(a)
             rows = self.connection.execute(s)
@@ -227,7 +264,7 @@ class policy_group:
     _policy_groups = [] # empty list of policy statements
     _policy_fields = ()    # set of field names
 
-    def __init__(self, engine_uri,table_name):
+    def __init__(self, engine_uri, table_name):
         """Define the policy group based on the fields in the table_name.
 
         Peeking into the database to get all columns; use the field names
@@ -240,14 +277,17 @@ class policy_group:
             self.connection = self.engine.connect()
             self.policies = _sa.Table(table_name, self.meta_data,
                                       autoload=True, autoload_with=self.engine)
+            self.table_name = table_name
         except:
             raise
         # make sure that name, source, destination, template all exist
-        self._policy_fields = [str(c).replace('policy.','') for c in self.policies.columns]
-        for req_field in ['p_name', 'p_source', 'p_destination', 'p_template']:
+        self._policy_fields = [str(c).replace(self.table_name + '.', '') \
+                               for c in self.policies.columns]
+        for req_field in ['p_name', 'p_source', 'p_destination', \
+                          'p_template', 'p_valid_from', 'p_valid_to']:
             if not req_field in self._policy_fields:
-                print >>sys.stderr, "policy_groups: Required field", req_field, \
-                    "not seen in", table_name
+                print >>sys.stderr, "policy_group needs", req_field, \
+                    "defined in table", self.table_name
                 sys.exit(1)
 
     def save(self, table_name):
@@ -259,19 +299,26 @@ class policy_group:
         exists = self.select(**kwargs)    # will match partial
         for e in exists:
             self.delete(e)
+        start_t = time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime())
+        kwargs['p_valid_from'] = start_t
+        kwargs['p_valid_to'] = '2038-01-01 00:00:00'
         i = self.policies.insert(values=kwargs)
         return self.connection.execute(i)
 
     def delete(self, d):
         """Delete the policy from the database"""
+        end_t = time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime())
         a = self.__kwarg2sel(**d)
-        i = self.policies.delete(a)
+        # i = self.policies.delete(a)
+        i = self.policies.update().where(a).values(p_valid_to=end_t)
         return self.connection.execute(i)
 
     def len(self):
         """Return the number of overall members stored"""
+        now_t = "%s.p_valid_from <= now() and %s.p_valid_to >= now()" % \
+                (self.table_name, self.table_name)
         try:
-            i = self.policies.count()
+            i = self.policies.count().where(now_t)
         except _sa.exc.SQLAlchemyError as e:
             print e
             raise
@@ -280,21 +327,32 @@ class policy_group:
 
     def __kwarg2sel(self, **kwargs):
         """Given a set of kwargs, convert to a select statement"""
-        a=''
-        andp=''
+        a = ''
+        andp = ''
         for k in kwargs:
-            a = a + andp + "policy.%s = \'%s\'" % (k, kwargs[k])
-            andp=" and "
-        return a        
+            if not kwargs[k]:
+                continue
+            a = a + andp + "%s.%s = \'%s\'" % (self.table_name, k, kwargs[k])
+            andp = " and "
+        # a = a + andp + " p_valid_from<=now() and p_valid_to>=now()"
+        return a
 
     def select(self, **kwargs):
         """Return an array of selected policy groups based on the
         arguments passed in"""
+        now_t = time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime())
         a = self.__kwarg2sel(**kwargs)
+        andp = ''
+        if len(a):
+            andp = " and "
+        # limit select to current records
+        a = a + andp + "%s.p_valid_from <= \'%s\' and %s.p_valid_to > \'%s\'" % \
+            (self.table_name, now_t, self.table_name, now_t)
         try:
             s = self.policies.select().where(a)
             rows = self.connection.execute(s)
-        except:
+        except OperationalError as o:
+            print o
             raise
         r = []
         for row in rows:
@@ -329,18 +387,24 @@ class policy_render:
             self.connection = self.engine.connect()
             self.sdp = _sa.Table(table_name, self.meta_data,
                                         autoload=True, autoload_with=self.engine)
+            self.table_name = table_name
         except:
             raise
         # check to make sure that 'source', 'destination' and 'port' at least exist
-        self._sdp_fields = [str(c).replace('sdp.','') for c in self.sdp.columns]
+        self._sdp_fields = [str(c).replace(self.table_name + '.', '') \
+                            for c in self.sdp.columns]
         for req_field in ['sdp_group', 'sdp_source', 'sdp_destination', 'sdp_source_ip', \
-                          'sdp_destination_ip', 'sdp_bidir', 'sdp_port', 'sdp_protocol']:
+                          'sdp_destination_ip', 'sdp_bidir', 'sdp_port', 'sdp_protocol', 'sdp_valid_from',\
+                          'sdp_valid_to']:
             if not req_field in self._sdp_fields:
-                print >>sys.stderr, "policy_render needs: ", req_field, "defined in the database"
+                print >>sys.stderr, "policy_render needs", req_field, \
+                    "defined in table", self.table_name
                 sys.exit(1)
 
     def len(self):
         """Return the number of rendered policy lines in the database"""
+        now_t = "%s.sdp_valid_from <= now() and %s.sdp_valid_to >= now()" % \
+                (self.table_name, self.table_name)
         try:
             i = self.sdp.count()
         except _sa_exc.SQLAlchemyError as e:
@@ -351,11 +415,14 @@ class policy_render:
 
     def __kwarg2sel(self, **kwargs):
         """Given a set of kwargs, convert to a select statement"""
-        a=''
-        andp=''
+        a = ''
+        andp = ''
         for k in kwargs:
-            a = a + andp + "sdp.%s = \'%s\'" % (k, kwargs[k])
-            andp=" and "
+            if not kwargs[k]:
+                continue
+            a = a + andp + "%s.%s = \'%s\'" % (self.table_name, k, kwargs[k])
+            andp = " and "
+        # a = a + andp + " sdp_valid_from<=now() and sdp_valid_to>=now()"
         return a
 
     def __iter__(self):
@@ -380,24 +447,40 @@ class policy_render:
         exists = self.select(**kwargs)  # matching partials
         for e in exists:
             self.delete(e)
+        start_t = time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime())
+        kwargs['sdp_valid_from'] = start_t
+        kwargs['sdp_valid_to'] = '2038-01-01 00:00:00'
         i = self.sdp.insert(values=kwargs)
         return self.connection.execute(i)
 
     def delete(self, d):
         """Delete the SDP line from the database"""
+        end_t = time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime())
         a = self.__kwarg2sel(**d)
-        i = self.sdp.delete(a)
+        # i = self.sdp.delete(a)
+        i = self.sdp.update().where(a).values(sdp_valid_to=end_t)
         return self.connection.execute(i)
 
     def select(self, **kwargs):
         """Select the SDP sets, indicated by the field/value criteria"""
+        now_t = time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime())
         a = self.__kwarg2sel(**kwargs)
-        s = self.sdp.select().where(a)
-        rows = self.connection.execute(s)
+        andp = ''
+        if len(a):
+            andp = " and "
+        # limit selects to current records
+        a = a + andp + "%s.sdp_valid_from <= \'%s\' and %s.sdp_valid_to > \'%s\'" % \
+            (self.table_name, now_t, self.table_name, now_t)
+        try:
+            s = self.sdp.select().where(a)
+            rows = self.connection.execute(s)
+        except OperationalError as o:
+            print o
+            raise
         r = []
         for row in rows:
             r.append(dict(row).copy())
-        self._host_groups = r
+        self._sdp_groups = r
         return r
 
 ####################
@@ -406,7 +489,7 @@ if __name__ == '__main__':
 
     if sys.argv[1] == '':
         # we need a "mysql://user:pass@localhost:3306/bender" for sqlalchemy
-        print sys.argv[0],"<sqlalchemy URI>"
+        print sys.argv[0], "<sqlalchemy URI>"
         sys.exit(1)
     db_uri = sys.argv[1]
 
@@ -435,11 +518,11 @@ if __name__ == '__main__':
 
     #
     # basic test of service template object
-    so = service_template(db_uri,'service_templates')
+    so = service_template(db_uri, 'service_templates')
     print "Number of service templates", so.len()
 
     # Now read a default policy statement - "forward_mail"
-    po = policy_group(db_uri,'policy')
+    po = policy_group(db_uri, 'policy')
     email_list = po.select(p_name='forward_email')
     email = email_list[0]
     print "Policy forward_email: %s can access %s on %s" % (email['p_source'],\

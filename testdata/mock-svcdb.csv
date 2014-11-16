@@ -1,9 +1,9 @@
-name,port,protocol,transport,bidir,owner,rp
-email,25,tcp,smtp,TRUE,tom,tom
-email,25,udp,smtp,TRUE,tom,tom
-email,465,tcp,smtp,TRUE,tom,tom
-domain,53,tcp,dns,TRUE,tom,tom
-domain,53,udp,dns,TRUE,tom,tom
-time,123,udp,ntp,TRUE,tom,tom
-web,80,tcp,http,TRUE,tom,tom
-web,443,tcp,http,TRUE,tom,tom
+st_name,st_port,st_protocol,st_transport,st_bidir,st_owner,st_rp,st_valid-from,st_valid-to
+email,25,tcp,smtp,TRUE,tom,tom,1970-01-01 00:00:01,2038-01-01 00:00:00
+email,25,udp,smtp,TRUE,tom,tom,1970-01-01 00:00:01,2038-01-01 00:00:00
+email,465,tcp,smtp,TRUE,tom,tom,1970-01-01 00:00:01,2038-01-01 00:00:00
+domain,53,tcp,dns,TRUE,tom,tom,1970-01-01 00:00:01,2038-01-01 00:00:00
+domain,53,udp,dns,TRUE,tom,tom,1970-01-01 00:00:01,2038-01-01 00:00:00
+time,123,udp,ntp,TRUE,tom,tom,1970-01-01 00:00:01,2038-01-01 00:00:00
+web,80,tcp,http,TRUE,tom,tom,1970-01-01 00:00:01,2038-01-01 00:00:00
+web,443,tcp,http,TRUE,tom,tom,1970-01-01 00:00:01,2038-01-01 00:00:00

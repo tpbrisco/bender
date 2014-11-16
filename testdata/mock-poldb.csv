@@ -1,7 +1,7 @@
-name,source,destination,template,bidir
-basic_service,workstation,server,domain,FALSE
-basic_service,workstation,server,time,FALSE
-basic_service,workstation,mail_gateway,email,TRUE
-forward_email,workstation,mail_gateway,email,TRUE
-basic_service,workstation,proxy,web,TRUE
-sync_time,workstation,server,time,
+p_name,p_source,p_destination,p_template,p_bidir,p_valid-from,p_valid-to
+basic_service,workstation,server,domain,FALSE,1970-01-01 00:00:01,2038-01-01 00:00:00
+basic_service,workstation,server,time,FALSE,1970-01-01 00:00:01,2038-01-01 00:00:00
+basic_service,workstation,mail_gateway,email,TRUE,1970-01-01 00:00:01,2038-01-01 00:00:00
+forward_email,workstation,mail_gateway,email,TRUE,1970-01-01 00:00:01,2038-01-01 00:00:00
+basic_service,workstation,proxy,web,TRUE,1970-01-01 00:00:01,2038-01-01 00:00:00
+sync_time,workstation,server,time,TRUE,1970-01-01 00:00:01,2038-01-01 00:00:00

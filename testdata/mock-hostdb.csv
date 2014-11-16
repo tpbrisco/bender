@@ -1,15 +1,15 @@
-name,member,type,owner,rp
-router,dracula,dmz,tom,tom
-server,rodan,internal,tom,tom
-server,ghidora,internal,tom,tom
-mail_gateway,ghidora,dmz,tom,tom
-mail_gateway,dracula,dmz,tom,tom
-router,nnetgear,dmz,tom,tom
-workstation,ghidora,none,tom,tom
-proxy,nnetgear,dmz,tom,tom
-proxy,dracula,dmz,tom,tom
-workstation,whitebox,none,tom,tom
-workstation,ghidora,none,tom,tomo
-workstation,ghidora,none,tomo,tomo
-mail_gateway,ghidora.v6,dmz,tom,tom
-mail_gateway,dracula.v6,dmz,tom,tom
+hg_name,hg_member,hg_type,hg_owner,hg_rp,hg_valid-from,hg_valid-to
+router,dracula,dmz,tom,tom,1970-01-01 00:00:01,2038-01-01 00:00:00
+server,rodan,internal,tom,tom,1970-01-01 00:00:01,2038-01-01 00:00:00
+server,ghidora,internal,tom,tom,1970-01-01 00:00:01,2038-01-01 00:00:00
+mail_gateway,ghidora,dmz,tom,tom,1970-01-01 00:00:01,2038-01-01 00:00:00
+mail_gateway,dracula,dmz,tom,tom,1970-01-01 00:00:01,2038-01-01 00:00:00
+router,nnetgear,dmz,tom,tom,1970-01-01 00:00:01,2038-01-01 00:00:00
+workstation,ghidora,none,tom,tom,1970-01-01 00:00:01,2038-01-01 00:00:00
+proxy,nnetgear,dmz,tom,tom,1970-01-01 00:00:01,2038-01-01 00:00:00
+proxy,dracula,dmz,tom,tom,1970-01-01 00:00:01,2038-01-01 00:00:00
+workstation,whitebox,none,tom,tom,1970-01-01 00:00:01,2038-01-01 00:00:00
+workstation,ghidora,none,tom,tomo,1970-01-01 00:00:01,2038-01-01 00:00:00
+workstation,ghidora,none,tomo,tomo,1970-01-01 00:00:01,2038-01-01 00:00:00
+mail_gateway,ghidora.v6,dmz,tom,tom,1970-01-01 00:00:01,2038-01-01 00:00:00
+mail_gateway,dracula.v6,dmz,tom,tom,1970-01-01 00:00:01,2038-01-01 00:00:00

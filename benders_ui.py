@@ -9,24 +9,27 @@ extensible to use more conventional databases.
 
 import bender_sql as bender
 import socket, sys
+import ConfigParser
 
 from flask import Flask, request, url_for, render_template, redirect
 
-b_ui = Flask(__name__, static_url_path='/static')
-
-# Get the database URI from the command line
+# Get the database URI 
 # For SQLAlchemy, we need something like
 #       mysql:///user:pass@localhost:3306/bender
-if sys.argv[1] == '':
-    print "benders_ui <sqlalchemy URI>"
-    sys.exit(1)
-db_uri = sys.argv[1]
-
-# Load the demo databases from mock data
-hg = bender.host_group(db_uri,'hostgroups')
-sg = bender.service_template(db_uri,'service_templates')
-pg = bender.policy_group(db_uri,'policy')
-sdp = bender.policy_render(db_uri,'sdp')
+def r_config(section, fary):
+    config = ConfigParser.ConfigParser()
+    config.read(fary)  # read array of filenames
+    dict1 = {}
+    options = config.options(section)
+    for option in options:
+        try:
+            dict1[option] = config.get(section, option)
+            if dict1[option] == -1:
+                print "skipping: %s" % option
+        except:
+            print "exception on %s!" % option
+            dict1[option] = None
+    return dict1
 
 # gethostaddr - similar to socket.gethostbyname() - but use getaddrinfo() to deal
 # with IPv6 addresses
@@ -38,6 +41,30 @@ def gethostaddr(name):
     # print "Name",name,"address",h_infos[0][4][0]
     return h_infos[0][4][0]
 
+# set up initial Flask and SQLAlchemy stuff
+b_ui = Flask(__name__, static_url_path='/static')
+
+db_cfg = r_config("database",['/etc/bender.cf','bender.cf'])
+
+if len(sys.argv) < 2 and db_cfg['uri'] == '':
+    print "benders_ui <sqlalchemy URI>"
+    print "\tmysql:///user:pass@hostname:3306/bender"
+    sys.exit(1)
+
+if db_cfg['uri'] == '':
+    db_uri = sys.argv[1]
+else:
+    db_uri = db_cfg['uri']
+
+# Load the databases
+hg = bender.host_group(db_uri,'hostgroups')
+sg = bender.service_template(db_uri,'service_templates')
+pg = bender.policy_group(db_uri,'policy')
+sdp = bender.policy_render(db_uri,'sdp')
+
+# 
+# Set up Flask main page, which has links to everything else
+#
 @b_ui.route('/index')
 @b_ui.route('/')
 def index_hostgroups():
