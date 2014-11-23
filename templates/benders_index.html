@@ -42,6 +42,10 @@
   <form action="savegroup" method="post">
     <input type="submit" value="Save Groups">
   </form>
+  {% if hg_error %}
+  <hr>
+  <pre>{{hg_error}}</pre>
+  {% endif %}
   <hr>
   <a name="services"></a>
   <h1>Service Templates</h1>
@@ -89,6 +93,10 @@
   <form action="saveservice" method="post">
     <input type="submit" value="Save Services">
   </form>
+  {% if svc_error %}
+  <hr>
+  <pre>{{svc_error}}</pre>
+  {% endif %}
   <hr>
   <a name="policies"></a>
   <h1>Policy Groups</h1>
@@ -127,6 +135,10 @@
   <form action="savepolicy" method="post">
     <input type="submit" value="Save Policies">
   </form>
+  {% if pol_error %}
+  <hr>
+  <pre>{{pol_error}}</pre>
+  {% endif %}
   <hr>
   <a name="renderedpolicies"></a>
   <h1>Rendered Policies</h1>
@@ -152,5 +164,10 @@
   <form action="resetsdp" method="post">
     <input type="submit" value="Clear Policies">
   </form>
+  {% if sdp_error %}
+  <hr>
+  <pre>{{sdp_error}}</pre>
+  <hr>
+  {% endif %}
 </div>
   

@@ -73,6 +73,12 @@ def index_hostgroups():
     p_info = []
     sdp_info = []
 
+    # check for messages from other parts redirecting here
+    hostgroup_err = request.args.get('hg_msg')
+    service_err = request.args.get('svc_msg')
+    policy_err = request.args.get('pol_msg')
+    sdp_err = request.args.get('sdp_msg')
+
     # sort when displaying, so members of the same group appear next to each other
     for h in sorted(hg.select(), key=lambda k: k['hg_name']):
         r_info.append(h.copy())
@@ -82,9 +88,12 @@ def index_hostgroups():
         p_info.append(p.copy())
     for sd in sorted(sdp.select(), key=lambda k: k['sdp_group']):
         sdp_info.append(sd.copy())
+    print "Render:",service_err
     return render_template('benders_index.html',
-                           groupinfo=r_info, svcinfo=q_info,
-                           polinfo=p_info, sdpinfo=sdp_info)
+                           groupinfo=r_info, hg_error=hostgroup_err,
+                           svcinfo=q_info, svc_error=service_err,
+                           polinfo=p_info, pol_error=policy_err,
+                           sdpinfo=sdp_info, sdp_error=sdp_err)
 
 
 #####################################################
@@ -124,7 +133,7 @@ def add_group():
     r = request.form['grouprp']
     if not m or not g:
         print "Web: *** add_group - no member or group specified:", g
-        return redirect(url_for('index_hostgroups'))
+        return redirect(url_for('index_hostgroups', hg_msg="no member specified"))
     print "Web: add member", m, "to group", g
     hg.add(hg_name=g, hg_member=m, hg_type=t, hg_owner=o, hg_rp=r)
     return redirect(url_for('index_hostgroups')+"#groups")
@@ -171,13 +180,17 @@ def add_service():
     bidir = request.form['bidir']
     owner = request.form['owner']
     rp = request.form['rp']
-    sg.add(st_name=name,
-           st_port=port,
-           st_protocol=protocol,
-           st_bidir=bidir,
-           st_transport=transport,
-           st_owner=owner,
-           st_rp=rp)
+    if not port.isdigit():
+        # pop up message here
+        return redirect(url_for('index_hostgroups',svc_msg='port must be a number')+"#services")
+    else:
+        sg.add(st_name=name,
+               st_port=port,
+               st_protocol=protocol,
+               st_bidir=bidir,
+               st_transport=transport,
+               st_owner=owner,
+               st_rp=rp)
     return redirect(url_for('index_hostgroups')+"#services")
 
 @b_ui.route('/saveservice', methods=['POST'])
@@ -238,6 +251,8 @@ def render_sdp():
     #             for all hosts in the policy destination host group
     #                 for all services in the service template
     #                   save the source,destination,port information
+    errors = ''
+    errors_nl = ''
     for p in pg:
         for src in hg.select(hg_name=p['p_source']):
             for dst in hg.select(hg_name=p['p_destination']):
@@ -247,7 +262,10 @@ def render_sdp():
                         source_ip = gethostaddr(src['hg_member'])
                         destination_ip = gethostaddr(dst['hg_member'])
                     except:
-                        print "Error looking up", src['hg_member'], "or", dst['hg_member']
+                        e_msg = "Error looking up %s or %s" % (src['hg_member'],dst['hg_member'])
+                        print e_msg
+                        errors = errors + errors_nl + e_msg
+                        errors_nl = '\r\n'
                         continue  # just skip it?
                     if src['hg_member'] != dst['hg_member']:
                         # print "\tSDP Add:", src['member'], "and", dst['member'], "for", svc['name']
@@ -261,7 +279,7 @@ def render_sdp():
                                 sdp_port=svc['st_port'],
                                 sdp_protocol=svc['st_protocol'])
     sdp.save('testdata/mock-sdpdb.csv')
-    return redirect(url_for('index_hostgroups')+"#renderedpolicies")
+    return redirect(url_for('index_hostgroups', sdp_msg=errors)+"#renderedpolicies")
 
 @b_ui.route('/resetsdp', methods=['POST'])
 def reset_sdp():
