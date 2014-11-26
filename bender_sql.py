@@ -116,7 +116,7 @@ class host_group:
         try:
             s = self.hostgroups.select().where(a)
             rows = self.connection.execute(s)
-        except OperationalError as o:
+        except o:
             print o
             raise
         r = []
@@ -232,7 +232,7 @@ class service_template:
         try:
             s = self.services.select().where(a)
             rows = self.connection.execute(s)
-        except OperationalError as o:
+        except o:
             print o
             raise
         r = []
@@ -351,7 +351,7 @@ class policy_group:
         try:
             s = self.policies.select().where(a)
             rows = self.connection.execute(s)
-        except OperationalError as o:
+        except o:
             print o
             raise
         r = []
@@ -474,7 +474,7 @@ class policy_render:
         try:
             s = self.sdp.select().where(a)
             rows = self.connection.execute(s)
-        except OperationalError as o:
+        except o:
             print o
             raise
         r = []
