@@ -116,9 +116,9 @@ class host_group:
         try:
             s = self.hostgroups.select().where(a)
             rows = self.connection.execute(s)
-        except o:
-            print o
-            raise
+        except _sa.exc.SQLAlchemyError as e:
+            print e
+            raise e
         r = []
         for row in rows:
             r.append(dict(row).copy())
@@ -160,8 +160,9 @@ class service_template:
             self.services = _sa.Table(table_name, self.meta_data,
                                       autoload=True, autoload_with=self.engine)
             self.table_name = table_name
-        except:
-            raise
+        except _sa.exc.SQLAlchemyError as e:
+            print e
+            raise e
 
         # check to make sure that "name" and "port" at least exist
         self._svc_fields = [str(c).replace(self.table_name + '.', '') \
@@ -232,9 +233,9 @@ class service_template:
         try:
             s = self.services.select().where(a)
             rows = self.connection.execute(s)
-        except o:
-            print o
-            raise
+        except _sa.exc.SQLAlchemyError as e:
+            print e
+            raise e
         r = []
         for row in rows:
             r.append(dict(row).copy())
@@ -278,8 +279,9 @@ class policy_group:
             self.policies = _sa.Table(table_name, self.meta_data,
                                       autoload=True, autoload_with=self.engine)
             self.table_name = table_name
-        except:
-            raise
+        except _sa.exc.SQLAlchemyError as e:
+            print e
+            raise e
         # make sure that name, source, destination, template all exist
         self._policy_fields = [str(c).replace(self.table_name + '.', '') \
                                for c in self.policies.columns]
@@ -351,9 +353,9 @@ class policy_group:
         try:
             s = self.policies.select().where(a)
             rows = self.connection.execute(s)
-        except o:
-            print o
-            raise
+        except _sa.exc.SQLAlchemyError as e:
+            print e
+            raise e
         r = []
         for row in rows:
             r.append(dict(row).copy())
@@ -388,8 +390,9 @@ class policy_render:
             self.sdp = _sa.Table(table_name, self.meta_data,
                                         autoload=True, autoload_with=self.engine)
             self.table_name = table_name
-        except:
-            raise
+        except _sa.exc.SQLAlchemyError as e:
+            print e
+            raise e
         # check to make sure that 'source', 'destination' and 'port' at least exist
         self._sdp_fields = [str(c).replace(self.table_name + '.', '') \
                             for c in self.sdp.columns]
@@ -409,7 +412,7 @@ class policy_render:
             i = self.sdp.count()
         except _sa_exc.SQLAlchemyError as e:
             print e
-            raise
+            raise e
         c = self.connection.execute(i)
         return c.scalar()
 
@@ -474,9 +477,9 @@ class policy_render:
         try:
             s = self.sdp.select().where(a)
             rows = self.connection.execute(s)
-        except o:
-            print o
-            raise
+        except _sa.exc.SQLAlchemyError as e:
+            print e
+            raise e
         r = []
         for row in rows:
             r.append(dict(row).copy())
