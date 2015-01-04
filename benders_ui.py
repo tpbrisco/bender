@@ -34,9 +34,12 @@ def r_config(section, fary):
 # gethostaddr - similar to socket.gethostbyname() - but use getaddrinfo() to deal
 # with IPv6 addresses
 def gethostaddr(name):
+    # a _very_ bad way to if name is an IP address or IP network (v4 or v6)
+    s = name
+    if s.strip('0123456789/.:abcdefABCDEF') == '':
+        return name  # _probably_ an IPv4 or IPv6 address or network
+    # raises gaierror for invalid names
     h_infos = socket.getaddrinfo(name,None,0,0,socket.SOL_TCP)
-    if len(h_infos) < 0:
-        raise
     # go for the first item returned in the array
     # print "Name",name,"address",h_infos[0][4][0]
     return h_infos[0][4][0]
