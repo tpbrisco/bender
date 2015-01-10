@@ -12,6 +12,23 @@ extensible to use more conventional databases.
 import sys
 import sqlalchemy as _sa
 import time
+import ConfigParser
+
+def read_config(section, file_list):
+    """read_config(section, file_list)
+
+    Read the bender configuration file list to initialize variables"""
+    config = ConfigParser.ConfigParser()
+    config.read(file_list)
+    dict1 = {}
+    options = config.options(section)
+    for option in options:
+        try:
+            dict1[option] = config.get(section, option)
+        except:
+            print >>sys.stderr, "Exception reading %s from %s" % (section, file_list)
+            dict1[option] = None
+    return dict1
 
 class host_group:
     """host_group(table_name)

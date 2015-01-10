@@ -9,27 +9,8 @@ extensible to use more conventional databases.
 
 import bender_sql as bender
 import socket, sys
-import ConfigParser
 
 from flask import Flask, request, url_for, render_template, redirect
-
-# Get the database URI 
-# For SQLAlchemy, we need something like
-#       mysql:///user:pass@localhost:3306/bender
-def r_config(section, fary):
-    config = ConfigParser.ConfigParser()
-    config.read(fary)  # read array of filenames
-    dict1 = {}
-    options = config.options(section)
-    for option in options:
-        try:
-            dict1[option] = config.get(section, option)
-            if dict1[option] == -1:
-                print "skipping: %s" % option
-        except:
-            print "exception on %s!" % option
-            dict1[option] = None
-    return dict1
 
 # gethostaddr - similar to socket.gethostbyname() - but use getaddrinfo() to deal
 # with IPv6 addresses
@@ -47,7 +28,7 @@ def gethostaddr(name):
 # set up initial Flask and SQLAlchemy stuff
 b_ui = Flask(__name__, static_url_path='/static')
 
-db_cfg = r_config("database",['/etc/bender.cf','bender.cf'])
+db_cfg = bender.read_config("database",['/etc/bender.cf','bender.cf'])
 
 if len(sys.argv) < 2 and db_cfg['uri'] == '':
     print "benders_ui <sqlalchemy URI>"

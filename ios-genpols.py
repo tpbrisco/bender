@@ -7,23 +7,6 @@
 
 import sys
 import bender_sql as bender
-# for standard configuration
-import ConfigParser
-
-def r_config(section, fary):
-    config = ConfigParser.ConfigParser()
-    config.read(fary)  # read array of filenames
-    dict1 = {}
-    options = config.options(section)
-    for option in options:
-        try:
-            dict1[option] = config.get(section, option)
-            if dict1[option] == -1:
-                print "skipping: %s" % option
-        except:
-            print "exception on %s!" % option
-            dict1[option] = None
-    return dict1
 
 if len(sys.argv) < 2:
     print "Usage: ios-genpol <policy name>"
@@ -31,7 +14,7 @@ if len(sys.argv) < 2:
 
 policy = sys.argv[1]
 
-pol_db_cfg = r_config("database", ['/etc/bender.cf','bender.cf'])
+pol_db_cfg = bender.read_config("database", ['/etc/bender.cf','bender.cf'])
 
 p_groups = bender.policy_group(pol_db_cfg['uri'], 'policy')
 sdp_groups = bender.policy_render(pol_db_cfg['uri'], 'sdp')
