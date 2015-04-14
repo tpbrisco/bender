@@ -43,9 +43,9 @@ class host_group:
 
         # check to make sure that "name","member" at least exist
         self._host_fields = dreader.fieldnames
-        for req_field in ['name', 'member']:
+        for req_field in ['hg_name', 'hg_member']:
             if not req_field in self._host_fields:
-                print >>sys.stderr, "Need \"name\" and \"member\" columns"
+                print >>sys.stderr, "hostdb needs \"name\" and \"member\" columns"
                 sys.exit(1)
 
         # Load the CSV into the _host_groups list of dictionaries
@@ -130,9 +130,9 @@ class service_template:
 
         # check to make sure that "name" and "port" at least exist
         self._svc_fields = dreader.fieldnames
-        for req_field in ['name', 'port']:
+        for req_field in ['st_name', 'st_port']:
             if not req_field in self._svc_fields:
-                print >>sys.stderr, "Need \"name\" and \"member\" columns"
+                print >>sys.stderr, "Server templates need \"name\" and \"member\" columns"
                 sys.exit(1)
 
         # Load the CSV into the _svc_groups list of dictionaries
@@ -215,9 +215,9 @@ class policy_group:
 
         # make sure that name, source, destination, template all exist
         self._policy_fields = dreader.fieldnames
-        for req_field in ['name', 'source', 'destination', 'template']:
+        for req_field in ['p_name', 'p_source', 'p_destination', 'p_template']:
             if not req_field in self._policy_fields:
-                print >>sys.stderr, "Required field", req_field, \
+                print >>sys.stderr, "Policy groups need ", req_field, \
                     "not seen in", table_name
                 sys.exit(1)
 
@@ -296,10 +296,10 @@ class policy_render:
         # check to make sure that 'source', 'destination' and 'port' at least exist
         self._sdp_fields = dreader.fieldnames
 
-        for req_field in ['group', 'source', 'destination', 'source_ip', \
-                          'destination_ip', 'bidir', 'port', 'protocol']:
+        for req_field in ['sdp_group', 'sdp_source', 'sdp_destination', 'sdp_source_ip', \
+                          'sdp_destination_ip', 'sdp_bidir', 'sdp_port', 'sdp_protocol']:
             if not req_field in self._sdp_fields:
-                print >>sys.stderr, "Need: ", req_field, "defined in the database"
+                print >>sys.stderr, "SDP needs", req_field, "defined in the database"
                 sys.exit(1)
 
         # load the CSV into the _sdp_groups list of dictionaries

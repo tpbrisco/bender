@@ -11,11 +11,11 @@
     <thead><td>Group</td><td>Member</td><td>Type</td><td>Owner</td><td>RP</td><td>Group</td><td>Member</td></thead>
     {% for group in groupinfo %}
       <tr>
-	<td>{{group.name}}</td>
-	<td>{{group.member}}</td>
-	<td>{{group.type}}</td>
-	<td>{{group.owner}}</td>
-	<td>{{group.rp}}</td>
+	<td>{{group.hg_name}}</td>
+	<td>{{group.hg_member}}</td>
+	<td>{{group.hg_type}}</td>
+	<td>{{group.hg_owner}}</td>
+	<td>{{group.hg_rp}}</td>
 	<td><form action="delgroup" method="post">
 	    <input type="hidden" value="{{group.name}}" name="group">
 	    <input type="submit" name="{{group.name}}" value="delete">
@@ -49,13 +49,13 @@
     <thead><td>Name</td><td>Port</td><td>Protocol</td><td>Transport</td><td>Bidir</td><td>Owner</td><td>RP</td><td>Service</td><td>Line</td></thead>
     {% for svc in svcinfo %}
     <tr>
-      <td>{{svc.name}}</td>
-      <td>{{svc.port}}</td>
-      <td>{{svc.protocol}}</td>
-      <td>{{svc.transport}}</td>
-      <td>{{svc.bidir}}</td>
-      <td>{{svc.owner}}</td>
-      <td>{{svc.rp}}</td>
+      <td>{{svc.st_name}}</td>
+      <td>{{svc.st_port}}</td>
+      <td>{{svc.st_protocol}}</td>
+      <td>{{svc.st_transport}}</td>
+      <td>{{svc.st_bidir}}</td>
+      <td>{{svc.st_owner}}</td>
+      <td>{{svc.st_rp}}</td>
       <td><form action="deletesvc" method="post">
 	  <input type="hidden" value="{{svc.name}}" name="name">
 	  <input type="submit" name="{{svc.name}}" value="delete">
@@ -96,10 +96,10 @@
     <thead><td>Name</td><td>Source</td><td>Dest</td><td>Template</td><td>Policy</td><td>Line</td></thead>
     {% for pol in polinfo %}
     <tr>
-      <td>{{pol.name}}</td>
-      <td>{{pol.source}}</td>
-      <td>{{pol.destination}}</td>
-      <td>{{pol.template}}</td>
+      <td>{{pol.p_name}}</td>
+      <td>{{pol.p_source}}</td>
+      <td>{{pol.p_destination}}</td>
+      <td>{{pol.p_template}}</td>
       <td><form action="delpolicy" method="post">
 	  <input type="submit" name="{{pol.name}}" value="delete">
 	  <input type="hidden" value="{{pol.name}}" name="name">
@@ -134,15 +134,15 @@
     <thead><td>Group</td><td>Name</td><td>Source</td><td>Source IP</td><td>Dest</td><td>Dest IP</td><td>Bidir</td><td>Port</td><td>Protocol</td></thead>
     {% for sdp in sdpinfo %}
     <tr>
-      <td>{{sdp.group}}</td>
-      <td>{{sdp.name}}</td>
-      <td>{{sdp.source}}</td>
-      <td>{{sdp.source_ip}}</td>
-      <td>{{sdp.destination}}</td>
-      <td>{{sdp.destination_ip}}</td>
-      <td>{{sdp.bidir}}</td>
-      <td>{{sdp.port}}</td>
-      <td>{{sdp.protocol}}</td>
+      <td>{{sdp.sdp_group}}</td>
+      <td>{{sdp.sdp_name}}</td>
+      <td>{{sdp.sdp_source}}</td>
+      <td>{{sdp.sdp_source_ip}}</td>
+      <td>{{sdp.sdp_destination}}</td>
+      <td>{{sdp.sdp_destination_ip}}</td>
+      <td>{{sdp.sdp_bidir}}</td>
+      <td>{{sdp.sdp_port}}</td>
+      <td>{{sdp.sdp_protocol}}</td>
     <tr>
       {% endfor %}
   </table>

@@ -39,13 +39,13 @@ def index_hostgroups():
     sdp_info = []
 
     # sort when displaying, so members of the same group appear next to each other
-    for h in sorted(hg, key=lambda k: k['name']):
+    for h in sorted(hg, key=lambda k: k['hg_name']):
         r_info.append(h.copy())
-    for s in sorted(sg, key=lambda k: k['name']):
+    for s in sorted(sg, key=lambda k: k['st_name']):
         q_info.append(s.copy())
-    for p in sorted(pg, key=lambda k: k['name']):
+    for p in sorted(pg, key=lambda k: k['p_name']):
         p_info.append(p.copy())
-    for sd in sorted(sdp, key=lambda k: k['group']):
+    for sd in sorted(sdp, key=lambda k: k['sdp_group']):
         sdp_info.append(sd.copy())
     return render_template('bender_index.html',
                            groupinfo=r_info, svcinfo=q_info,
