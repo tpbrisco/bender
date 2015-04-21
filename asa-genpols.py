@@ -7,8 +7,7 @@
 # the policy database -- since the ASA allows us to define service groups and
 # host groups, this will be much cleaner to read.
 
-import os, sys
-import getopt
+import sys
 import bender_sql as bender
 
 if len(sys.argv) < 2:
