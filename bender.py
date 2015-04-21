@@ -9,7 +9,7 @@ While this version uses a CSV file, it should be easily
 extensible to use more conventional databases.
 """
 
-import sys
+import sys, io
 import csv as _csv
 
 class host_group:
@@ -34,7 +34,7 @@ class host_group:
 
         # Open, Peek into the CSV, and create DictReader
         try:
-            reader_fd = open(table_name, 'r')
+            reader_fd = io.open(table_name, 'r')
             dialect = _csv.Sniffer().sniff(reader_fd.read(1024))
             reader_fd.seek(0)
             dreader = _csv.DictReader(reader_fd, dialect=dialect)
@@ -56,7 +56,7 @@ class host_group:
     def save(self, table_name):
         """Persist (commit) changes to the database indicated"""
         fields = self._host_fields
-        w_fd = open(table_name, 'w')
+        w_fd = io.open(table_name, 'w')
         dw = _csv.DictWriter(w_fd, fields)
         dw.writeheader()
         for r in self._host_groups:
@@ -121,7 +121,7 @@ class service_template:
 
         # Open, Peek into the CSV, and create DictReader
         try:
-            reader_fd = open(table_name, 'r')
+            reader_fd = io.open(table_name, 'r')
             dialect = _csv.Sniffer().sniff(reader_fd.read(1024))
             reader_fd.seek(0)
             dreader = _csv.DictReader(reader_fd, dialect=dialect)
@@ -143,7 +143,7 @@ class service_template:
     def save(self, table_name):
         """Persist (commit) changes to the database indicated"""
         fields = self._svc_fields
-        w_fd = open(table_name, 'w')
+        w_fd = io.open(table_name, 'w')
         dw = _csv.DictWriter(w_fd, fields)
         dw.writeheader()
         for r in self._svc_groups:
@@ -206,7 +206,7 @@ class policy_group:
 
         # Open, peek into the CSV and create DictReader
         try:
-            reader_fd = open(table_name, 'r')
+            reader_fd = io.open(table_name, 'r')
             dialect = _csv.Sniffer().sniff(reader_fd.read(1024))
             reader_fd.seek(0)
             dreader = _csv.DictReader(reader_fd, dialect=dialect)
@@ -228,7 +228,7 @@ class policy_group:
     def save(self, table_name):
         """Persist (commit) changes to the database indicated"""
         fields = self._policy_fields
-        w_fd = open(table_name, 'w')
+        w_fd = io.open(table_name, 'w')
         dw = _csv.DictWriter(w_fd, fields)
         dw.writeheader()
         for r in self._policy_groups:
@@ -287,7 +287,7 @@ class policy_render:
         """Define the rendered policies in the named database."""
 
         try:
-            sdp_fd = open(table_name, 'r')
+            sdp_fd = io.open(table_name, 'r')
             dialect = _csv.Sniffer().sniff(sdp_fd.read(1024))
             sdp_fd.seek(0)
             dreader = _csv.DictReader(sdp_fd, dialect=dialect)
@@ -328,7 +328,7 @@ class policy_render:
     def save(self, table_name):
         """Persist (commit) rendered policy to the database indicated"""
         fields = self._sdp_fields
-        w_fd = open(table_name, 'w')
+        w_fd = io.open(table_name, 'w')
         dw = _csv.DictWriter(w_fd, fields)
         dw.writeheader()
         for r in self._sdp_groups:
