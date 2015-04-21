@@ -194,23 +194,23 @@ def render_sdp():
     #                 for all services in the service template
     #                   save the source,destination,port information
     for p in pg:
-        for src in hg.select(name=p['source']):
-            for dst in hg.select(name=p['destination']):
-                for svc in sg.select(name=p['template']):
-                    name = "%s_%s_%s" % (src['name'], dst['name'], svc['name'])
+        for src in hg.select(hg_name=p['p_source']):
+            for dst in hg.select(hg_name=p['p_destination']):
+                for svc in sg.select(st_name=p['p_template']):
+                    name = "%s_%s_%s" % (src['hg_name'], dst['hg_name'], svc['st_name'])
                     try:
-                        source_ip = gethostaddr(src['member'])
-                        destination_ip = gethostaddr(dst['member'])
+                        source_ip = gethostaddr(src['hg_member'])
+                        destination_ip = gethostaddr(dst['hg_member'])
                     except:
-                        print "Error looking up", src['member'], "or", dst['member']
+                        print "Error looking up", src['hg_member'], "or", dst['hg_member']
                         continue  # just skip it?
-                    if src['member'] != dst['member']:
-                        # print "\tSDP Add:", src['member'], "and", dst['member'], "for", svc['name']
-                        sdp.add(group=p['name'], name=name,
-                                source=src['member'], source_ip=source_ip,
-                                destination=dst['member'], destination_ip=destination_ip,
-                                bidir=svc['bidir'],
-                                port=svc['port'], protocol=svc['protocol'])
+                    if src['hg_member'] != dst['hg_member']:
+                        # print "\tSDP Add:", src['hg_member'], "and", dst['hg_member'], "for", svc['st__name']
+                        sdp.add(sdp_group=p['p_name'], sdp_name=name,
+                                sdp_source=src['hg_member'], sdp_source_ip=source_ip,
+                                sdp_destination=dst['hg_member'], sdp_destination_ip=destination_ip,
+                                sdp_bidir=svc['st_bidir'],
+                                sdp_port=svc['st_port'], sdp_protocol=svc['st_protocol'])
     sdp.save('testdata/mock-sdpdb.csv')
     return redirect(url_for('index_hostgroups')+"#renderedpolicies")
 
