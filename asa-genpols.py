@@ -47,7 +47,7 @@ for service_name in service_names:
             print "object-group service %s %s" % (obj_name, svc_prot_name)
             svc = s_groups.select(st_name=service_name, st_protocol=svc_prot_name)
             for s in svc:
-                print "\tport-object", s['st_port']
+                print "\tport-object eq", s['st_port']
 
 # For all of the hosts in groups, build up the ASA namespace, and
 # print out all of the host object definitions
