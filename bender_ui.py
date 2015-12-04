@@ -15,10 +15,10 @@ from flask import Flask, request, url_for, render_template, redirect
 b_ui = Flask(__name__, static_url_path='/static')
 
 # Load the demo databases from mock data
-hg = bender.host_group('testdata/mock-hostdb.csv')
-sg = bender.service_template('testdata/mock-svcdb.csv')
-pg = bender.policy_group('testdata/mock-poldb.csv')
-sdp = bender.policy_render('testdata/mock-sdpdb.csv')
+hg = bender.host_group('mockdata/mock-hostdb.csv')
+sg = bender.service_template('mockdata/mock-svcdb.csv')
+pg = bender.policy_group('mockdata/mock-poldb.csv')
+sdp = bender.policy_render('mockdata/mock-sdpdb.csv')
 
 # gethostaddr - similar to socket.gethostbyname() - but use getaddrinfo() to deal
 # with IPv6 addresses
@@ -59,10 +59,10 @@ def index_hostgroups():
 def delete_group():
     g = request.form['group']
     if not g:
-        print "Web: *** delete_group - no group specified:", s
+        print "Web: *** delete_group - no group specified:", g
         return redirect(url_for('index_hostgroups'))
     print "Web: delete group ", g
-    dg = hg.select(name=g)
+    dg = hg.select(hg_name=g)
     for d in dg:
         hg.delete(d)
     return redirect(url_for('index_hostgroups'))
@@ -72,9 +72,9 @@ def delete_member():
     m = request.form['member']
     g = request.form['group']
     if not m or not g:
-        print "Web: *** delete_member - no member specified:", m
+        print "Web: *** delete_member - no member specified:", m, "group:",g
         return redirect(url_for('index_hostgroups'))
-    dm = hg.select(name=g, member=m)
+    dm = hg.select(hg_name=g, hg_member=m)
     print "Web: delete member ", m, "returned", dm
     for m in dm:
         hg.delete(m)
@@ -91,12 +91,12 @@ def add_group():
         print "Web: *** add_group - no member or group specified:", g
         return redirect(url_for('index_hostgroups'))
     print "Web: add member", m, "to group", g
-    hg.add(name=g, member=m, type=t, owner=o, rp=r)
+    hg.add(hg_name=g, hg_member=m, hg_type=t, hg_owner=o, hg_rp=r)
     return redirect(url_for('index_hostgroups')+"#groups")
 
 @b_ui.route('/savegroup', methods=['POST'])
 def save_group():
-    hg.save("testdata/mock-hostdb.csv")
+    hg.save("mockdata/mock-hostdb.csv")
     return redirect(url_for('index_hostgroups')+"#groups")
 
 #####################################################
@@ -106,7 +106,7 @@ def save_group():
 def delete_service():
     sname = request.form['name']
     print "Web: *** delete_service", sname
-    sl = sg.select(name=sname)
+    sl = sg.select(st_name=sname)
     for s in sl:
         sg.delete(s)
     return redirect(url_for('index_hostgroups')+"#services")
@@ -115,14 +115,14 @@ def delete_service():
 def delete_service_line():
     lname = request.form['name']
     print "Web: *** delete_service line", lname
-    #    sl = sg.select(name=sname)
-    sl = sg.select(name=request.form['name'],
-                   port=request.form['port'],
-                   protocol=request.form['protocol'],
-                   transport=request.form['transport'],
-                   bidir=request.form['bidir'],
-                   owner=request.form['owner'],
-                   rp=request.form['rp'])
+    #    sl = sg.select(st_name=sname)
+    sl = sg.select(st_name=request.form['name'],
+                   st_port=request.form['port'],
+                   st_protocol=request.form['protocol'],
+                   st_transport=request.form['transport'],
+                   st_bidir=request.form['bidir'],
+                   st_owner=request.form['owner'],
+                   st_rp=request.form['rp'])
     for s in sl:
         sg.delete(s)
     return redirect(url_for('index_hostgroups')+"#services")
@@ -136,13 +136,13 @@ def add_service():
     bidir = request.form['bidir']
     owner = request.form['owner']
     rp = request.form['rp']
-    sg.add(name=name, port=port, protocol=protocol, bidir=bidir,
-           transport=transport, owner=owner, rp=rp)
+    sg.add(st_name=name, st_port=port, st_protocol=protocol, st_bidir=bidir,
+           st_transport=transport, st_owner=owner, st_rp=rp)
     return redirect(url_for('index_hostgroups')+"#services")
 
 @b_ui.route('/saveservice', methods=['POST'])
 def save_service():
-    sg.save("testdata/mock-svcdb.csv")
+    sg.save("mockdata/mock-svcdb.csv")
     return redirect(url_for('index_hostgroups')+"#services")
 
 #####################################################
@@ -154,8 +154,8 @@ def delete_policy_line():
     source = request.form['source']
     destination = request.form['destination']
     template = request.form['template']
-    dpol = pg.select(name=name, source=source,
-                     destination=destination, template=template)
+    dpol = pg.select(p_name=name, p_source=source,
+                     p_destination=destination, p_template=template)
     for d in dpol:
         pg.delete(d)
     return redirect(url_for('index_hostgroups')+"#policies")
@@ -163,7 +163,7 @@ def delete_policy_line():
 @b_ui.route('/delpolicy', methods=['POST'])
 def delete_policy():
     name = request.form['name']
-    dpol = pg.select(name=name)
+    dpol = pg.select(p_name=name)
     for d in dpol:
         pg.delete(d)
     return redirect(url_for('index_hostgroups')+"#policies")
@@ -174,12 +174,15 @@ def add_policy():
     source = request.form['source']
     destination = request.form['destination']
     template = request.form['template']
-    pg.add(name=name, source=source, destination=destination, template=template)
+    pg.add(p_name=name,
+                p_source=source,
+                p_destination=destination,
+                p_template=template)
     return redirect(url_for('index_hostgroups')+"#policies")
 
 @b_ui.route('/savepolicy', methods=['POST'])
 def save_policy():
-    pg.save("testdata/mock-poldb.csv")
+    pg.save("mockdata/mock-poldb.csv")
     return redirect(url_for('index_hostgroups')+"#policies")
 
 #####################################################
@@ -208,17 +211,18 @@ def render_sdp():
                         # print "\tSDP Add:", src['hg_member'], "and", dst['hg_member'], "for", svc['st__name']
                         sdp.add(sdp_group=p['p_name'], sdp_name=name,
                                 sdp_source=src['hg_member'], sdp_source_ip=source_ip,
-                                sdp_destination=dst['hg_member'], sdp_destination_ip=destination_ip,
-                                sdp_bidir=svc['st_bidir'],
-                                sdp_port=svc['st_port'], sdp_protocol=svc['st_protocol'])
-    sdp.save('testdata/mock-sdpdb.csv')
+                                sdp_destination=dst['hg_member'],
+                                sdp_destination_ip=destination_ip,
+                                sdp_bidir=svc['st_bidir'], sdp_port=svc['st_port'],
+                                sdp_protocol=svc['st_protocol'])
+    sdp.save('mockdata/mock-sdpdb.csv')
     return redirect(url_for('index_hostgroups')+"#renderedpolicies")
 
 @b_ui.route('/resetsdp', methods=['POST'])
 def reset_sdp():
     # just erase the whole thing - usually done prior to a full recompute
     sdp.zero()
-    sdp.save('testdata/mock-sdpdb.csv')
+    sdp.save('mockdata/mock-sdpdb.csv')
     return redirect(url_for('index_hostgroups')+"#renderedpolicies")
 
 if __name__ == '__main__':

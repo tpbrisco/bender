@@ -17,14 +17,14 @@
 	<td>{{group.hg_owner}}</td>
 	<td>{{group.hg_rp}}</td>
 	<td><form action="delgroup" method="post">
-	    <input type="hidden" value="{{group.name}}" name="group">
-	    <input type="submit" name="{{group.name}}" value="delete">
+	    <input type="hidden" value="{{group.hg_name}}" name="group">
+	    <input type="submit" name="{{group.hg_name}}" value="delete">
 	    </form>
 	  </td>
 	<td><form action="delmember" method="post">
-	    <input type="hidden" value="{{group.name}}" name="group">
-	    <input type="hidden" value="{{group.member}}" name="member">
-	    <input type="submit" name="{{group.member}}" value="delete">
+	    <input type="hidden" value="{{group.hg_name}}" name="group">
+	    <input type="hidden" value="{{group.hg_member}}" name="member">
+	    <input type="submit" name="{{group.hg_member}}" value="delete">
 	    </form>
 	  </td>	
       </tr>
@@ -57,19 +57,19 @@
       <td>{{svc.st_owner}}</td>
       <td>{{svc.st_rp}}</td>
       <td><form action="deletesvc" method="post">
-	  <input type="hidden" value="{{svc.name}}" name="name">
-	  <input type="submit" name="{{svc.name}}" value="delete">
+	  <input type="hidden" value="{{svc.st_name}}" name="name">
+	  <input type="submit" name="{{svc.st_name}}" value="delete">
 	</form>
       </td>
       <td><form action="deletesvcline" method="post">
-	  <input type="submit" name="{{svc.name}}" value="delete">
-	  <input type="hidden" value="{{svc.name}}" name="name">
-	  <input type="hidden" value="{{svc.port}}" name="port">
-	  <input type="hidden" value="{{svc.protocol}}" name="protocol">
-	  <input type="hidden" value="{{svc.transport}}" name="transport">
-	  <input type="hidden" value="{{svc.bidir}}" name="bidir">
-	  <input type="hidden" value="{{svc.owner}}" name="owner">
-	  <input type="hidden" value="{{svc.rp}}" name="rp">
+	  <input type="submit" name="{{svc.st_name}}" value="delete">
+	  <input type="hidden" value="{{svc.st_name}}" name="name">
+	  <input type="hidden" value="{{svc.st_port}}" name="port">
+	  <input type="hidden" value="{{svc.st_protocol}}" name="protocol">
+	  <input type="hidden" value="{{svc.st_transport}}" name="transport">
+	  <input type="hidden" value="{{svc.st_bidir}}" name="bidir">
+	  <input type="hidden" value="{{svc.st_owner}}" name="owner">
+	  <input type="hidden" value="{{svc.st_rp}}" name="rp">
 	</form>
       </td>
     </tr>
@@ -101,16 +101,16 @@
       <td>{{pol.p_destination}}</td>
       <td>{{pol.p_template}}</td>
       <td><form action="delpolicy" method="post">
-	  <input type="submit" name="{{pol.name}}" value="delete">
-	  <input type="hidden" value="{{pol.name}}" name="name">
+	  <input type="submit" name="{{pol.p_name}}" value="delete">
+	  <input type="hidden" value="{{pol.p_name}}" name="name">
 	  </form>
       </td>
       <td><form action="delpolicyline" method="post">
-	  <input type="submit" name="{{pol.name}}" value="delete">
-	  <input type="hidden" value="{{pol.name}}" name="name">
-	  <input type="hidden" value="{{pol.source}}" name="source">
-	  <input type="hidden" value="{{pol.destination}}" name="destination">
-	  <input type="hidden" value="{{pol.template}}" name="template">
+	  <input type="submit" name="{{pol.p_name}}" value="delete">
+	  <input type="hidden" value="{{pol.p_name}}" name="name">
+	  <input type="hidden" value="{{pol.p_source}}" name="source">
+	  <input type="hidden" value="{{pol.p_destination}}" name="destination">
+	  <input type="hidden" value="{{pol.p_template}}" name="template">
 	</form>
       </td>
     <tr>

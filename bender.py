@@ -24,6 +24,7 @@ class host_group:
 
     _host_groups = []  # empty list of host_group dictionaries
     _host_fields = ()     # set of field names
+    _host_dialect = ''    # dialect of CSV file
 
     def __init__(self, table_name):
         """Define the host group based on the fields in the table_name.
@@ -34,7 +35,7 @@ class host_group:
 
         # Open, Peek into the CSV, and create DictReader
         try:
-            reader_fd = io.open(table_name, 'r')
+            reader_fd = io.open(table_name, 'rb')
             dialect = _csv.Sniffer().sniff(reader_fd.read(1024))
             reader_fd.seek(0)
             dreader = _csv.DictReader(reader_fd, dialect=dialect)
@@ -43,6 +44,7 @@ class host_group:
 
         # check to make sure that "name","member" at least exist
         self._host_fields = dreader.fieldnames
+        self._host_dialect = dreader.dialect
         for req_field in ['hg_name', 'hg_member']:
             if not req_field in self._host_fields:
                 print >>sys.stderr, "hostdb needs \"name\" and \"member\" columns"
@@ -56,8 +58,8 @@ class host_group:
     def save(self, table_name):
         """Persist (commit) changes to the database indicated"""
         fields = self._host_fields
-        w_fd = io.open(table_name, 'w')
-        dw = _csv.DictWriter(w_fd, fields)
+        w_fd = io.open(table_name, 'wb')
+        dw = _csv.DictWriter(w_fd, fields, dialect=self._host_dialect)
         dw.writeheader()
         for r in self._host_groups:
             try:
@@ -111,6 +113,7 @@ class service_template:
 
     _svc_groups = []  # empty list of host_group dictionaries
     _svc_fields = ()     # set of field names
+    _svc_dialect = ''    # dialect of CSV
 
     def __init__(self, table_name):
         """Define the service_template based on the columns in the
@@ -121,7 +124,7 @@ class service_template:
 
         # Open, Peek into the CSV, and create DictReader
         try:
-            reader_fd = io.open(table_name, 'r')
+            reader_fd = io.open(table_name, 'rb')
             dialect = _csv.Sniffer().sniff(reader_fd.read(1024))
             reader_fd.seek(0)
             dreader = _csv.DictReader(reader_fd, dialect=dialect)
@@ -130,6 +133,7 @@ class service_template:
 
         # check to make sure that "name" and "port" at least exist
         self._svc_fields = dreader.fieldnames
+        self._svc_dialect = dreader.dialect
         for req_field in ['st_name', 'st_port']:
             if not req_field in self._svc_fields:
                 print >>sys.stderr, "Server templates need \"name\" and \"member\" columns"
@@ -143,8 +147,8 @@ class service_template:
     def save(self, table_name):
         """Persist (commit) changes to the database indicated"""
         fields = self._svc_fields
-        w_fd = io.open(table_name, 'w')
-        dw = _csv.DictWriter(w_fd, fields)
+        w_fd = io.open(table_name, 'wb')
+        dw = _csv.DictWriter(w_fd, fields, dialect=self._svc_dialect)
         dw.writeheader()
         for r in self._svc_groups:
             dw.writerow(r)
@@ -197,6 +201,7 @@ class policy_group:
 
     _policy_groups = [] # empty list of policy statements
     _policy_fields = ()    # set of field names
+    _policy_dialect = ''   # dialect of CSV
 
     def __init__(self, table_name):
         """Define the policy group based on the fields in the table_name.
@@ -206,7 +211,7 @@ class policy_group:
 
         # Open, peek into the CSV and create DictReader
         try:
-            reader_fd = io.open(table_name, 'r')
+            reader_fd = io.open(table_name, 'rb')
             dialect = _csv.Sniffer().sniff(reader_fd.read(1024))
             reader_fd.seek(0)
             dreader = _csv.DictReader(reader_fd, dialect=dialect)
@@ -215,6 +220,7 @@ class policy_group:
 
         # make sure that name, source, destination, template all exist
         self._policy_fields = dreader.fieldnames
+        self._policy_dialect = dreader.dialect
         for req_field in ['p_name', 'p_source', 'p_destination', 'p_template']:
             if not req_field in self._policy_fields:
                 print >>sys.stderr, "Policy groups need ", req_field, \
@@ -228,8 +234,8 @@ class policy_group:
     def save(self, table_name):
         """Persist (commit) changes to the database indicated"""
         fields = self._policy_fields
-        w_fd = io.open(table_name, 'w')
-        dw = _csv.DictWriter(w_fd, fields)
+        w_fd = io.open(table_name, 'wb')
+        dw = _csv.DictWriter(w_fd, fields, dialect=self._policy_dialect)
         dw.writeheader()
         for r in self._policy_groups:
             try:
@@ -282,19 +288,21 @@ class policy_render:
 
     _sdp_groups = []  # empty list of sdp dictionaries
     _sdp_fields = ()     # set of field names
+    _sdp_dialect = ''    # remember dialect type
 
     def __init__(self, table_name):
         """Define the rendered policies in the named database."""
 
         try:
-            sdp_fd = io.open(table_name, 'r')
-            dialect = _csv.Sniffer().sniff(sdp_fd.read(1024))
+            sdp_fd = io.open(table_name, 'rb')
+            dialect = _csv.Sniffer().sniff(sdp_fd.read(1024), delimiters=',')
             sdp_fd.seek(0)
             dreader = _csv.DictReader(sdp_fd, dialect=dialect)
         except:
             raise
         # check to make sure that 'source', 'destination' and 'port' at least exist
         self._sdp_fields = dreader.fieldnames
+        self._sdp_dialect = dreader.dialect
 
         for req_field in ['sdp_group', 'sdp_source', 'sdp_destination', 'sdp_source_ip', \
                           'sdp_destination_ip', 'sdp_bidir', 'sdp_port', 'sdp_protocol']:
@@ -328,8 +336,8 @@ class policy_render:
     def save(self, table_name):
         """Persist (commit) rendered policy to the database indicated"""
         fields = self._sdp_fields
-        w_fd = io.open(table_name, 'w')
-        dw = _csv.DictWriter(w_fd, fields)
+        w_fd = io.open(table_name, 'wb')
+        dw = _csv.DictWriter(w_fd, fields, dialect=self._sdp_dialect)
         dw.writeheader()
         for r in self._sdp_groups:
             dw.writerow(r)
