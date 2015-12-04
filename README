@@ -151,7 +151,7 @@ Getting Started
  at the bottom.  There is also a "bender_ui.py" written using Flask that can
  help to understand the inter-workings a bit better.  Simply run the
  "bender_ui" program, and point your browser at localhost:5000 to run through
- a demo.
+ a demo.  Bender requires python-sqlalchemy, python-flask, and mariadb.
  
  You can use the sample "ios-genpol" and "asa-genpol" to generate
  configuration for specific devices.  For example; the example data defines a
