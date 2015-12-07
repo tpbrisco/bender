@@ -117,7 +117,7 @@ class host_group:
             a = a + andp + "%s.%s = \'%s\'" % (self.table_name, k, kwargs[k])
             andp = " and "
         # use the time fields hg_valid_from and hg_valid_to
-        # a = a + andp + " hg_valid_from<=now() and hg_valid_to>=now()"
+        # a = a + " and hg_valid_from<=now() and hg_valid_to>=now()"
         return a
 
     def select(self, **kwargs):
@@ -234,7 +234,7 @@ class service_template:
                 continue
             a = a + andp + "%s.%s = \'%s\'" % (self.table_name, k, kwargs[k])
             andp = " and "
-        # a = a + andp + " st_valid_from<=now() and st_valid_to>=now()"
+        # a = a + " and st_valid_from<=now() and st_valid_to>=now()"
         return a
 
     def select(self, **kwargs):
@@ -353,7 +353,7 @@ class policy_group:
                 continue
             a = a + andp + "%s.%s = \'%s\'" % (self.table_name, k, kwargs[k])
             andp = " and "
-        # a = a + andp + " p_valid_from<=now() and p_valid_to>=now()"
+        # a = a + " and p_valid_from<=now() and p_valid_to>=now()"
         return a
 
     def select(self, **kwargs):
@@ -442,7 +442,7 @@ class policy_render:
                 continue
             a = a + andp + "%s.%s = \'%s\'" % (self.table_name, k, kwargs[k])
             andp = " and "
-        # a = a + andp + " sdp_valid_from<=now() and sdp_valid_to>=now()"
+        # a = a + " and sdp_valid_from<=utc_timestamp() and sdp_valid_to>=utc_timestamp()"
         return a
 
     def __iter__(self):

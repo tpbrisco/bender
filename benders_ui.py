@@ -237,6 +237,9 @@ def render_sdp():
     #                   save the source,destination,port information
     errors = ''
     errors_nl = ''
+    # first, clear all policies
+    sdp.delete({})
+    # regenerate what we need
     for p in pg:
         for src in hg.select(hg_name=p['p_source']):
             for dst in hg.select(hg_name=p['p_destination']):
