@@ -6,41 +6,40 @@ Manage your firewall rules in a better way - track and maintain your policy.
 
 Most organizations try to manage firewall rules by involving their users in
 the low-level details, use technical staff to formulate, validate and assess
-the rules, manually determine where they should be implemented, craft the
+firewall rules, manually determine where they should be implemented, craft the
 syntax, and install them during an infrequent maintenance window.  Arcane
 naming schemes are used to try and associate these low-level details with
 applications, customers are tracked in spreadsheets or sharepoint.  What is
 manageable chaos in small environments, quickly turns into a indecipherable
 mess of device configuration, and staff lose track of why or how a rule is
-used, why it is in the firewall, when or if it can be removed - and the sense
-of security is rapidly eroded, and the business cannot accomplish their goals.
+used, why it is in the firewall, when or if it can be removed - and security
+is rapidly eroded. Ultimately, the business cannot accomplish their goals.
 
 The fundamental failures are (a) Policy (the high level statements) is lost in
-the device rules (the low level syntax), and (b) The devices implementing the
+the device rules (the low level syntax), and (b) Devices implementing the
 rules are the wrong place to "store" all this information.
 
 If the above sounds like your current experience with firewalls, you should
 consider the approach here.
 
 Instead of the typical "access-list permit" approach, instead think of
-   "TheseHosts" want to communicate to "ThoseHosts" for "ThisService"
+   "TheseHosts" need to communicate to "ThoseHosts" for "ThisService"
 
 By understanding the systems involved (the "thesehosts" and "thosehosts") and
-the services provided by the applications (the "thisservice"), the rest what
-is needed can be easily derived, changed, updated and validated -- all before
-you even lay a hand on a firewall.
+the services provided by the applications (the "thisservice"), the rest of
+what is needed can be easily derived, changed, updated and validated -- all
+before you even lay a hand on a firewall.
 
 "TheseHosts" want to communicate to "ThoseHosts" for "ThisService"
 
-Groups Of Hosts leverage a Service Template to gain access to Groups Of
-Hosts.
-A Policy group defines the current and allowable sets of rules
+Groups Of Hosts use a Service Template to gain access to Groups Of Hosts.  A
+Policy group defines the current and allowable sets of rules
 
 A simple policy might include
   Host Groups
        Group		Member	Type	Owner
-       workstation	huey	user	walt
-       workstation	louie	user	walt
+       workstation	huey	user		walt
+       workstation	louie	user		walt
        server		pluto	genpop	jerri
        server		goofy	genpop	jerri
 
@@ -55,10 +54,9 @@ A simple policy might include
 	basic_service	workstation	server		domain
 	basic_service	workstation	server		time
 
-The above say that "workstations can access basic_service on server".  From 
-this, by looking up domain names and services, the basic data for various
-firewalls is available (see "Policy Rendering"), and correct syntax can be 
-easily generated.
+The above say that "workstations can access basic_service on server".  From
+this data, the basic data for various firewalls is available (see "Policy
+Rendering"), and correct syntax can be easily generated.
 
 Day to Day Policy Management:
     Manage and maintain the host groups
@@ -72,9 +70,9 @@ Day to Day Policy Management:
     The policy statement (the "allow TheseHosts to access ThoseHosts for
     ThatService") is managed in the policy database.
 
-    By "rendering" the policy (using the host and service templates) to the
-    source, destination and protocols, a set of end-to-end permissions can be
-    determined - this looks a lot more like the traditional
+    Using the host and service templates, the policy can be "rendered" to the
+    source, destination and protocols -- the set of end-to-end permissions can
+    be determined - this looks a lot more like the traditional
     <source,destination,protocol> tuples that people who manage firewalls are
     used to seeing.  However, these only describe the end-to-end state, and
     don't describe all devices in the path.
@@ -149,16 +147,13 @@ Does it work on a Juniper/Cisco/etc?
 Getting Started
 
  Bender is written as a python class library - but includes some example code
- at the bottom.  There is also a "bender_ui.py" written using Flask that can
- help to understand the inter-workings a bit better.  Simply run the
- "bender_ui" program, and point your browser at localhost:5000 to run through
- a demo.  Bender requires python-sqlalchemy, python-flask, and mariadb.
+ at the bottom of the "bender.py" for some trivial examples.  For a more
+ complete demonstration, consider the examples using Flask in either
+ "bender_ui" (using CSV formatted files), or "benders_ui" (using MariaDB).
  
- You can use the sample "ios-genpol" and "asa-genpol" to generate
- configuration for specific devices.  For example; the example data defines a
- policy "basic_service" - running "ios-genpol" with this policy name will
- generate IOS access lists to permit those services.
-	 
+ Example policy-generating code is in asa-genpol[s].py, and ios-genpol[s].py.
+ Once the demonstration is running, you can use these programs to generate
+ configuration for the indicated platform.
 
 ;; Local Variables:
 ;; mode: text

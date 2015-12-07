@@ -1,8 +1,0 @@
-name,member,type,owner,rp
-router,dracula,dmz,brisco,brisco
-server,rodan,internal,brisco,brisco
-server,ghidora,internal,brisco,brisco
-workstation,ghidora,none,brisco,brisco
-workstation,mothra,internal,brisco,brisco
-smtp-servers,ghidora,internal,brisco,brisco
-smtp-servers,dracula,internal,brisco,brisco
