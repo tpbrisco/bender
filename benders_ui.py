@@ -20,7 +20,14 @@ def gethostaddr(name):
     if s.strip('0123456789/.:abcdefABCDEF') == '':
         return name  # _probably_ an IPv4 or IPv6 address or network
     # raises gaierror for invalid names
-    h_infos = socket.getaddrinfo(name,None,0,0,socket.SOL_TCP)
+    try:
+        h_infos = socket.getaddrinfo(name,None,0,0,socket.SOL_IP)
+    except socket.gaierror as e:
+        e_msg = socket.gai_strerror(e)
+        print "bender.gethostaddr(name):", e_msg
+        errors = errors + errors_nl + e_msg
+        errors_nl = '\r\n'
+        raise e
     # go for the first item returned in the array
     # print "Name",name,"address",h_infos[0][4][0]
     return h_infos[0][4][0]
@@ -237,8 +244,6 @@ def render_sdp():
     #                   save the source,destination,port information
     errors = ''
     errors_nl = ''
-    # first, clear all policies
-    sdp.delete({})
     # regenerate what we need
     for p in pg:
         for src in hg.select(hg_name=p['p_source']):

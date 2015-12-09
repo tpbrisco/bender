@@ -91,7 +91,6 @@ class host_group:
         """Delete the member from the database"""
         end_t = time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime())
         a = self.__kwarg2sel(**d)
-        # i = self.hostgroups.delete(a)
         i = self.hostgroups.update().where(a).values(hg_valid_to=end_t)
         return self.connection.execute(i)
 
@@ -209,7 +208,6 @@ class service_template:
         """Delete the service template line from the database"""
         end_t = time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime())
         a = self.__kwarg2sel(**d)
-        # i = self.services.delete(a)
         i = self.services.update().where(a).values(st_valid_to=end_t)
         return self.connection.execute(i)
 
@@ -328,7 +326,6 @@ class policy_group:
         """Delete the policy from the database"""
         end_t = time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime())
         a = self.__kwarg2sel(**d)
-        # i = self.policies.delete(a)
         i = self.policies.update().where(a).values(p_valid_to=end_t)
         return self.connection.execute(i)
 
@@ -455,8 +452,11 @@ class policy_render:
 
     def zero(self):
         """Reset/clear the rendered policy data"""
-        s = self.sdp.delete()
-        i = self.connection.execute(s)
+        # note that a "self.sdp.delete()" is different from "self.delete({})".  The
+        # self.sdp.delete() is a SQL (alchemy) operator to delete all rows, whereas
+        # self.delete({}) leaves the rows but updates the timestamps
+        s = self.delete({})   # delete method tombstones it all
+        return s
 
     def save(self, table_name):
         """Persist (commit) rendered policy to the database indicated"""
@@ -477,7 +477,6 @@ class policy_render:
         """Delete the SDP line from the database"""
         end_t = time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime())
         a = self.__kwarg2sel(**d)
-        # i = self.sdp.delete(a)
         i = self.sdp.update().where(a).values(sdp_valid_to=end_t)
         return self.connection.execute(i)
 

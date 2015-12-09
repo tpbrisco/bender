@@ -295,7 +295,7 @@ class policy_render:
 
         try:
             sdp_fd = io.open(table_name, 'rb')
-            dialect = _csv.Sniffer().sniff(sdp_fd.read(1024), delimiters=',')
+            dialect = _csv.Sniffer().sniff(sdp_fd.read(2048), delimiters=',')
             sdp_fd.seek(0)
             dreader = _csv.DictReader(sdp_fd, dialect=dialect)
         except:

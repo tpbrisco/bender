@@ -23,11 +23,20 @@ sdp = bender.policy_render('mockdata/mock-sdpdb.csv')
 # gethostaddr - similar to socket.gethostbyname() - but use getaddrinfo() to deal
 # with IPv6 addresses
 def gethostaddr(name):
-    h_infos = socket.getaddrinfo(name,None,0,0,socket.SOL_TCP)
-    if len(h_infos) < 0:
-        raise
+    # a _very_ bad way to if name is an IP address or IP network (v4 or v6)
+    s = name
+    if s.strip('0123456789/.:abcdefABCDEF') == '':
+        return name  # _probably_ an IPv4 or IPv6 address or network
+    try:
+        h_infos = socket.getaddrinfo(name,None,0,0,socket.SOL_TCP)
+    except socket.gaierror as e:
+        e_msg = stocket.gai_strerror(e)
+        print "bender.gethostaddr(name):", e_msg
+        errors = errors + errors_nl + e_msg
+        errors_nl = '\r\n'
+        raise e
     # go for the first item returned in the array
-    print "Name",name,"address",h_infos[0][4][0]
+    # print "Name",name,"address",h_infos[0][4][0]
     return h_infos[0][4][0]
 
 @b_ui.route('/index')
