@@ -76,6 +76,15 @@ class host_group:
         # this is a no-op now - we use autocommit in sqlalchemy
         return
 
+    def update(self, **kwargs):
+        """Update fields to values indicated in kwargs"""
+        a = self.__kwarg2sel(hg_name=self._host_groups[0]['hg_name'],
+                             hg_member=self._host_groups[0]['hg_member'])
+        a = a + " and hg_valid_from<=now() and hg_valid_to>=now()"
+        print "hostgroup/update",a,"kwargs=",kwargs
+        i = self.hostgroups.update().where(a).values(kwargs)
+        return self.connection.execute(i)
+
     def add(self, **kwargs):
         """Add a new member to the database, with the field values"""
         exists = self.select(**kwargs)    # will match partial
@@ -192,6 +201,15 @@ class service_template:
     def save(self, table_name):
         """Persist (commit) changes to the database indicated"""
         return
+
+    def update(self, **kwargs):
+        """Update fields to values indicated in kwargs"""
+        a = self.__kwargs2sel(st_name=self._svc_groups[0]['st_name'],
+                              st_port=self._svc_groups[0]['st_port'],
+                              st_protocol=self._svc_groups[0]['st_protocol']);
+        a = a + "and st_valid_from<=now() and st_valid_to>=now()"
+        i = self.services.update().where(a).values(kwargs)
+        return self.connection.execute(i)
 
     def add(self, **kwargs):
         """Add a new service template to the database, with the field values"""
@@ -310,6 +328,14 @@ class policy_group:
     def save(self, table_name):
         """Persist (commit) changes to the database indicated"""
         return
+
+    def update(self, **kwargs):
+        """Update fields to values indicated in kwargs"""
+        a = self.__kwargs2sel(p_name=self._policy_groups[0]['p_name'],
+                              p_port=self._policy_groups[0]['p_template'])
+        a = a + "and p_valid_from<=now() and p_valid_to>=now()"
+        i = self.policies.update().where(a).values(kwargs)
+        return self.connection.execute(i)
 
     def add(self, **kwargs):
         """Add a new policy to the database, with the field values"""
@@ -461,6 +487,14 @@ class policy_render:
     def save(self, table_name):
         """Persist (commit) rendered policy to the database indicated"""
         return
+
+    def update(self, **kwargs):
+        """Update fields to values indicated in kwargs"""
+        a = self.__kwargs2sel(sdp_group=self._sdp_groups[0]['sdp_group'],
+                              sdp_name=self._sdp_groups[0]['sdp_name'])
+        a = a + "and sdp_valid_from<=now() and sdp_valid_to>=now()"
+        i = self.sdp.update().where(a).values(kwargs)
+        return self.connection.execute(i)
 
     def add(self, **kwargs):
         """Add a new SDP member to the database, with the field values"""
