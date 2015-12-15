@@ -200,7 +200,7 @@ class service_template:
         """Persist (commit) changes to the database indicated"""
         return
 
-    def update(self, k_selection, k_update)
+    def update(self, k_selection, k_update):
         """Update rows matched in k_selection with fields k_update"""
         a = self.__kwargs2sel(**k_selection)
         a = a + "and st_valid_from<=now() and st_valid_to>=now()"
@@ -325,7 +325,7 @@ class policy_group:
         """Persist (commit) changes to the database indicated"""
         return
 
-    def update(self, k_selection, k_update)
+    def update(self, k_selection, k_update):
         """Update rows matched in k_selection with fields k_update"""
         a = self.__kwargs2sel(**k_selection)
         a = a + "and p_valid_from<=now() and p_valid_to>=now()"
@@ -483,7 +483,7 @@ class policy_render:
         """Persist (commit) rendered policy to the database indicated"""
         return
 
-    def update(self, k_selection, k_update)
+    def update(self, k_selection, k_update):
         """Update rows matched in k_selection with fields k_update"""
         a = self.__kwargs2sel(**k_selection)
         a = a + "and sdp_valid_from<=now() and sdp_valid_to>=now()"
