@@ -76,13 +76,11 @@ class host_group:
         # this is a no-op now - we use autocommit in sqlalchemy
         return
 
-    def update(self, **kwargs):
-        """Update fields to values indicated in kwargs"""
-        a = self.__kwarg2sel(hg_name=self._host_groups[0]['hg_name'],
-                             hg_member=self._host_groups[0]['hg_member'])
+    def update(self, k_selection, k_update):
+        """Update rows matched in k_selection with fields k_update"""
+        a = self.__kwarg2sel(**k_selection)
         a = a + " and hg_valid_from<=now() and hg_valid_to>=now()"
-        print "hostgroup/update",a,"kwargs=",kwargs
-        i = self.hostgroups.update().where(a).values(kwargs)
+        i = self.hostgroups.update().where(a).values(k_update)
         return self.connection.execute(i)
 
     def add(self, **kwargs):
@@ -202,13 +200,11 @@ class service_template:
         """Persist (commit) changes to the database indicated"""
         return
 
-    def update(self, **kwargs):
-        """Update fields to values indicated in kwargs"""
-        a = self.__kwargs2sel(st_name=self._svc_groups[0]['st_name'],
-                              st_port=self._svc_groups[0]['st_port'],
-                              st_protocol=self._svc_groups[0]['st_protocol']);
+    def update(self, k_selection, k_update)
+        """Update rows matched in k_selection with fields k_update"""
+        a = self.__kwargs2sel(**k_selection)
         a = a + "and st_valid_from<=now() and st_valid_to>=now()"
-        i = self.services.update().where(a).values(kwargs)
+        i = self.services.update().where(a).values(k_update)
         return self.connection.execute(i)
 
     def add(self, **kwargs):
@@ -329,12 +325,11 @@ class policy_group:
         """Persist (commit) changes to the database indicated"""
         return
 
-    def update(self, **kwargs):
-        """Update fields to values indicated in kwargs"""
-        a = self.__kwargs2sel(p_name=self._policy_groups[0]['p_name'],
-                              p_port=self._policy_groups[0]['p_template'])
+    def update(self, k_selection, k_update)
+        """Update rows matched in k_selection with fields k_update"""
+        a = self.__kwargs2sel(**k_selection)
         a = a + "and p_valid_from<=now() and p_valid_to>=now()"
-        i = self.policies.update().where(a).values(kwargs)
+        i = self.policies.update().where(a).values(k_update)
         return self.connection.execute(i)
 
     def add(self, **kwargs):
@@ -488,12 +483,11 @@ class policy_render:
         """Persist (commit) rendered policy to the database indicated"""
         return
 
-    def update(self, **kwargs):
-        """Update fields to values indicated in kwargs"""
-        a = self.__kwargs2sel(sdp_group=self._sdp_groups[0]['sdp_group'],
-                              sdp_name=self._sdp_groups[0]['sdp_name'])
+    def update(self, k_selection, k_update)
+        """Update rows matched in k_selection with fields k_update"""
+        a = self.__kwargs2sel(**k_selection)
         a = a + "and sdp_valid_from<=now() and sdp_valid_to>=now()"
-        i = self.sdp.update().where(a).values(kwargs)
+        i = self.sdp.update().where(a).values(k_update)
         return self.connection.execute(i)
 
     def add(self, **kwargs):
