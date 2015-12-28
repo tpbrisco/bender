@@ -201,7 +201,7 @@ class service_template:
 
     def update(self, k_selection, k_update):
         """Update rows matched in k_selection with fields k_update"""
-        a = self.__kwargs2sel(**k_selection)
+        a = self.__kwarg2sel(**k_selection)
         a = a + "and st_valid_from<=utc_timestamp() and st_valid_to>=utc_timestamp()"
         i = self.services.update().where(a).values(k_update)
         return self.connection.execute(i)
@@ -325,7 +325,7 @@ class policy_group:
 
     def update(self, k_selection, k_update):
         """Update rows matched in k_selection with fields k_update"""
-        a = self.__kwargs2sel(**k_selection)
+        a = self.__kwarg2sel(**k_selection)
         a = a + "and p_valid_from<=utc_timestamp() and p_valid_to>=utc_timestamp()"
         i = self.policies.update().where(a).values(k_update)
         return self.connection.execute(i)
@@ -481,7 +481,7 @@ class policy_render:
 
     def update(self, k_selection, k_update):
         """Update rows matched in k_selection with fields k_update"""
-        a = self.__kwargs2sel(**k_selection)
+        a = self.__kwarg2sel(**k_selection)
         a = a + "and sdp_valid_from<=utc_timestamp() and sdp_valid_to>=utc_timestamp()"
         i = self.sdp.update().where(a).values(k_update)
         return self.connection.execute(i)
