@@ -79,7 +79,7 @@ class host_group:
     def update(self, k_selection, k_update):
         """Update rows matched in k_selection with fields k_update"""
         a = self.__kwarg2sel(**k_selection)
-        a = a + " and hg_valid_from<=now() and hg_valid_to>=now()"
+        a = a + " and hg_valid_from<=utc_timestamp() and hg_valid_to>=utc_timestamp()"
         i = self.hostgroups.update().where(a).values(k_update)
         return self.connection.execute(i)
 
@@ -103,8 +103,9 @@ class host_group:
 
     def len(self):
         """Return the number of overall members stored"""
-        now_t = "%s.hg_valid_from <= now() and %s.hg_valid_to >= now()" % \
+        now_t = "%s.hg_valid_from <= utc_timestamp() and %s.hg_valid_to >= utc_timestamp()" % \
                 (self.table_name, self.table_name)
+        return len(self._host_groups)
         try:
             i = self.hostgroups.count().where(now_t)
         except _sa.exc.SQLAlchemyError as e:
@@ -122,8 +123,6 @@ class host_group:
                 continue
             a = a + andp + "%s.%s = \'%s\'" % (self.table_name, k, kwargs[k])
             andp = " and "
-        # use the time fields hg_valid_from and hg_valid_to
-        # a = a + " and hg_valid_from<=now() and hg_valid_to>=now()"
         return a
 
     def select(self, **kwargs):
@@ -203,7 +202,7 @@ class service_template:
     def update(self, k_selection, k_update):
         """Update rows matched in k_selection with fields k_update"""
         a = self.__kwargs2sel(**k_selection)
-        a = a + "and st_valid_from<=now() and st_valid_to>=now()"
+        a = a + "and st_valid_from<=utc_timestamp() and st_valid_to>=utc_timestamp()"
         i = self.services.update().where(a).values(k_update)
         return self.connection.execute(i)
 
@@ -227,7 +226,7 @@ class service_template:
 
     def len(self):
         """Return the number of service lines (not templates) in the database"""
-        now_t = "%s.st_valid_from <= now() and %s.st_valid_to >= now()" % \
+        now_t = "%s.st_valid_from <= utc_timestamp() and %s.st_valid_to >= utc_timestamp()" % \
                 (self.table_name, self.table_name)
         try:
             i = self.services.count().where(now_t)
@@ -246,7 +245,6 @@ class service_template:
                 continue
             a = a + andp + "%s.%s = \'%s\'" % (self.table_name, k, kwargs[k])
             andp = " and "
-        # a = a + " and st_valid_from<=now() and st_valid_to>=now()"
         return a
 
     def select(self, **kwargs):
@@ -328,7 +326,7 @@ class policy_group:
     def update(self, k_selection, k_update):
         """Update rows matched in k_selection with fields k_update"""
         a = self.__kwargs2sel(**k_selection)
-        a = a + "and p_valid_from<=now() and p_valid_to>=now()"
+        a = a + "and p_valid_from<=utc_timestamp() and p_valid_to>=utc_timestamp()"
         i = self.policies.update().where(a).values(k_update)
         return self.connection.execute(i)
 
@@ -352,7 +350,7 @@ class policy_group:
 
     def len(self):
         """Return the number of overall members stored"""
-        now_t = "%s.p_valid_from <= now() and %s.p_valid_to >= now()" % \
+        now_t = "%s.p_valid_from <= utc_timestamp() and %s.p_valid_to >= utc_timestamp()" % \
                 (self.table_name, self.table_name)
         try:
             i = self.policies.count().where(now_t)
@@ -371,7 +369,6 @@ class policy_group:
                 continue
             a = a + andp + "%s.%s = \'%s\'" % (self.table_name, k, kwargs[k])
             andp = " and "
-        # a = a + " and p_valid_from<=now() and p_valid_to>=now()"
         return a
 
     def select(self, **kwargs):
@@ -441,7 +438,7 @@ class policy_render:
 
     def len(self):
         """Return the number of rendered policy lines in the database"""
-        now_t = "%s.sdp_valid_from <= now() and %s.sdp_valid_to >= now()" % \
+        now_t = "%s.sdp_valid_from <= utc_timestamp() and %s.sdp_valid_to >= utc_timestamp()" % \
                 (self.table_name, self.table_name)
         try:
             i = self.sdp.count()
@@ -460,7 +457,6 @@ class policy_render:
                 continue
             a = a + andp + "%s.%s = \'%s\'" % (self.table_name, k, kwargs[k])
             andp = " and "
-        # a = a + " and sdp_valid_from<=utc_timestamp() and sdp_valid_to>=utc_timestamp()"
         return a
 
     def __iter__(self):
@@ -486,7 +482,7 @@ class policy_render:
     def update(self, k_selection, k_update):
         """Update rows matched in k_selection with fields k_update"""
         a = self.__kwargs2sel(**k_selection)
-        a = a + "and sdp_valid_from<=now() and sdp_valid_to>=now()"
+        a = a + "and sdp_valid_from<=utc_timestamp() and sdp_valid_to>=utc_timestamp()"
         i = self.sdp.update().where(a).values(k_update)
         return self.connection.execute(i)
 
