@@ -71,6 +71,28 @@ class host_group:
                     "defined in table", self.table_name
                 sys.exit(1)
 
+    def len(self):
+        """Return the number of overall members stored"""
+        now_t = "%s.hg_valid_from <= utc_timestamp() and %s.hg_valid_to >= utc_timestamp()" % \
+                (self.table_name, self.table_name)
+        return len(self._host_groups)
+        try:
+            i = self.hostgroups.count().where(now_t)
+        except _sa.exc.SQLAlchemyError as e:
+            print e
+            raise
+        c = self.connection.execute(i)
+        return c.scalar()
+
+    def __kwarg2sel(self, **kwargs):
+        """Given a set of kwargs, convert to a select statement"""
+        a = ''
+        andp = ''
+        for k in kwargs:
+            a = a + andp + "%s.%s = \'%s\'" % (self.table_name, k, kwargs[k])
+            andp = " and "
+        return a
+
     def save(self, table_name):
         """Persist (commit) changes to the database indicated"""
         # this is a no-op now - we use autocommit in sqlalchemy
@@ -100,30 +122,6 @@ class host_group:
         a = self.__kwarg2sel(**d)
         i = self.hostgroups.update().where(a).values(hg_valid_to=end_t)
         return self.connection.execute(i)
-
-    def len(self):
-        """Return the number of overall members stored"""
-        now_t = "%s.hg_valid_from <= utc_timestamp() and %s.hg_valid_to >= utc_timestamp()" % \
-                (self.table_name, self.table_name)
-        return len(self._host_groups)
-        try:
-            i = self.hostgroups.count().where(now_t)
-        except _sa.exc.SQLAlchemyError as e:
-            print e
-            raise
-        c = self.connection.execute(i)
-        return c.scalar()
-
-    def __kwarg2sel(self, **kwargs):
-        """Given a set of kwargs, convert to a select statement"""
-        a = ''
-        andp = ''
-        for k in kwargs:
-            if not kwargs[k]:
-                continue
-            a = a + andp + "%s.%s = \'%s\'" % (self.table_name, k, kwargs[k])
-            andp = " and "
-        return a
 
     def select(self, **kwargs):
         """Select a subset of members, selected by the field/value criteria"""
@@ -241,8 +239,6 @@ class service_template:
         a = ''
         andp = ''
         for k in kwargs:
-            if not kwargs[k]:
-                continue
             a = a + andp + "%s.%s = \'%s\'" % (self.table_name, k, kwargs[k])
             andp = " and "
         return a
@@ -365,8 +361,6 @@ class policy_group:
         a = ''
         andp = ''
         for k in kwargs:
-            if not kwargs[k]:
-                continue
             a = a + andp + "%s.%s = \'%s\'" % (self.table_name, k, kwargs[k])
             andp = " and "
         return a
@@ -453,8 +447,6 @@ class policy_render:
         a = ''
         andp = ''
         for k in kwargs:
-            if not kwargs[k]:
-                continue
             a = a + andp + "%s.%s = \'%s\'" % (self.table_name, k, kwargs[k])
             andp = " and "
         return a
@@ -483,6 +475,7 @@ class policy_render:
         """Update rows matched in k_selection with fields k_update"""
         a = self.__kwarg2sel(**k_selection)
         a = a + "and sdp_valid_from<=utc_timestamp() and sdp_valid_to>=utc_timestamp()"
+        print "update(k1=",k_selection,"k2=",k_update,") -> a=",a
         i = self.sdp.update().where(a).values(k_update)
         return self.connection.execute(i)
 
