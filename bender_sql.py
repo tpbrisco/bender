@@ -75,7 +75,6 @@ class host_group:
         """Return the number of overall members stored"""
         now_t = "%s.hg_valid_from <= utc_timestamp() and %s.hg_valid_to > utc_timestamp()" % \
                 (self.table_name, self.table_name)
-        return len(self._host_groups)
         try:
             i = self.hostgroups.count().where(now_t)
         except _sa.exc.SQLAlchemyError as e:
