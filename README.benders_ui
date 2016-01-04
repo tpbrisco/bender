@@ -1,0 +1,52 @@
+
+Benders_ui
+
+Demonstration of bender using MySQL.
+
+Benders_ui.py will run a Flask-based proof of concept for managing policies
+for firewalls, and allow the use of asa-genpol/ios-genpol to demonstrate the
+automatic generation of firewall/acl configuration.
+
+Files:
+	benders_ui.py	-	the Flask application for managing the data
+	benders.py	-	the object library used by the above
+	testdata/		-   	   sample data to get started
+	asa-genpols.py - 	generate configuration for Cisco ASA firewalls
+	ios-genpols.py -	generate configuration for Cisco IOS routers
+
+Steps:
+	- install MariaDB
+	  	  Create a user "bender" with a password.  Bender should have
+		  full admin rights to the database and tables below.
+	  	  Create a database "bender" (password "bender"), with tables
+		  "hostgroups", "policy", "service_templates" and "sdp".
+		  hostgroups:	hg_name, hg_member, hg_type, hg_owner, hg_rp VARCHAR(45)
+			      	        hg_valid_form, hg_valid_to TIMESTAMP
+		  policy:		p_name, p_source, p_destination, p_template VARCHAR(45)
+		  			p_bidir TINYINT(1)
+					p_valid_from, p_valid_to TIMESTAMP
+		  service_templates:
+					st_name, st_protocol, st_transport, st_owner, st_rp VARCHAR(45)
+					st_port INT(11), st_bidir TINYINT(1)
+					st_valid_from, st_valid_to TIMESTAMP
+		  sdp:		sdp_group, sdp_name, sdp_source,
+		  			sdp_destination, sdp_protocol VARCHAR(45)
+					sdp_port INT(11), sdp_bidir TINYINT(1)
+					sdp_valid_from, sdp_valid_to TIMESTAMP
+		  
+	- load database into MariaDB
+	       	  Using scripts/gen-insert, populate data for tables
+		  	# Usage: gen-insert.bash <csv file> <table name>
+		  	bash gen-insert.bash mockdata/hostgroups.csv hostgroups
+		  and piping into "mysql -u bender -p" (you'll be prompted for
+	       	  the password).
+	- from the file "sample_bender.cf", create a "bender.cf" file with
+	       	  the proper username:password
+	- start benders_ui.py in the current directory - this will start a web
+	       	  server on http://localhost:5010
+	- point your web browser at http://localhost:5010
+
+;; Local Variables:
+;; mode: text
+;; fill-column: 78
+;; End:

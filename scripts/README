@@ -1,0 +1,13 @@
+
+
+Load the database model (with mysql-workbench)
+
+To load the databases:
+   bash gen-insert.bash hostgroups.csv hostgroups
+   bash gen-insert.bash policy.csv policy
+   bash gen-insert.bash sdp.csv sdp
+   bash gen-insert.bash service_templates.csv service_templates
+
+piping each into
+       mysql -u bender -p
+(you'll be prompted for the password)

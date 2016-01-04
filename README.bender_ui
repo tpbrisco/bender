@@ -1,0 +1,26 @@
+
+Bender_ui
+
+Demonstration of bender using CSV formatted data.
+
+Bender_ui.py will run a Flask-based proof of concept for managing policies for
+firewalls, and allow the use of the asa-genpol/ios-genpol to demonstrate the
+automatic generation of firewall/acl configuration.
+
+Files:
+	bender_ui.py	-	the Flask application for managing the data
+	bender.py	-	the object library used by the above
+	testdata/		-   	sample data to get started
+	asa-genpol.py	-	generate configuration for Cisco ASA firewalls
+	ios-genpol.py 	-	generate configuration for Cisco IOS routers
+
+Steps:
+	- copy testdata/* to mockdata/ - this sets up the initial test data
+	- start bender_ui.py in the current directory - this will start a web
+	  		     	server on http://localhost:5010
+	- point your web browser at http://localhost:5010
+
+;; Local Variables:
+;; mode: text
+;; fill-column: 78
+;; End:

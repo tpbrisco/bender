@@ -1,2 +1,2 @@
 [database]
-URI=mysql://root:default@localhost:3306/bender
+URI=mysql://bender:default@localhost:3306/bender
