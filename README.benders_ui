@@ -37,7 +37,7 @@ Steps:
 	- load database into MariaDB
 	       	  Using scripts/gen-insert, populate data for tables
 		  	# Usage: gen-insert.bash <csv file> <table name>
-		  	bash gen-insert.bash mockdata/hostgroups.csv hostgroups
+		  	bash gen-insert.bash testdata/hostgroups.csv hostgroups
 		  and piping into "mysql -u bender -p" (you'll be prompted for
 	       	  the password).
 	- from the file "sample_bender.cf", create a "bender.cf" file with
