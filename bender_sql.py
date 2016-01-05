@@ -71,6 +71,19 @@ class host_group:
                     "defined in table", self.table_name
                 sys.exit(1)
 
+    def __valid_utc(self):
+        return "%s.hg_valid_from<=utc_timestamp() and %s.hg_valid_to > utc_timestamp()" % \
+            (self.table_name, self.table_name)
+
+    def __kwarg2sel(self, **kwargs):
+        """Given a set of kwargs, convert to a select statement"""
+        a = ''
+        andp = ''
+        for k in kwargs:
+            a = a + andp + "%s.%s = \'%s\'" % (self.table_name, k, kwargs[k])
+            andp = " and "
+        return a
+
     def len(self):
         """Return the number of overall members stored"""
         now_t = "%s.hg_valid_from <= utc_timestamp() and %s.hg_valid_to > utc_timestamp()" % \
@@ -83,15 +96,6 @@ class host_group:
         c = self.connection.execute(i)
         return c.scalar()
 
-    def __kwarg2sel(self, **kwargs):
-        """Given a set of kwargs, convert to a select statement"""
-        a = ''
-        andp = ''
-        for k in kwargs:
-            a = a + andp + "%s.%s = \'%s\'" % (self.table_name, k, kwargs[k])
-            andp = " and "
-        return a
-
     def save(self, table_name):
         """Persist (commit) changes to the database indicated"""
         # this is a no-op now - we use autocommit in sqlalchemy
@@ -100,7 +104,7 @@ class host_group:
     def update(self, k_selection, k_update):
         """Update rows matched in k_selection with fields k_update"""
         a = self.__kwarg2sel(**k_selection)
-        a = a + " and hg_valid_from<=utc_timestamp() and hg_valid_to > utc_timestamp()"
+        a = a + " and " + self.__valid_utc()
         i = self.hostgroups.update().where(a).values(k_update)
         return self.connection.execute(i)
 
@@ -129,8 +133,7 @@ class host_group:
         if len(a):
             andp = " and "
         # limit selects to current records
-        a = a + andp + "%s.hg_valid_from <= utc_timestamp() and %s.hg_valid_to > utc_timestamp()" % \
-            (self.table_name, self.table_name)
+        a = a + andp + self.__valid_utc()
         try:
             s = self.hostgroups.select().where(a)
             rows = self.connection.execute(s)
@@ -191,6 +194,30 @@ class service_template:
                     "defined in table", self.table_name
                 sys.exit(1)
 
+    def __valid_utc(self):
+        return "%s.st_valid_from<=utc_timestamp() and %s.st_valid_to > utc_timestamp()" % \
+            (self.table_name, self.table_name)
+
+    def __kwarg2sel(self, **kwargs):
+        """Given a set of kwargs, convert to a select statement"""
+        a = ''
+        andp = ''
+        for k in kwargs:
+            a = a + andp + "%s.%s = \'%s\'" % (self.table_name, k, kwargs[k])
+            andp = " and "
+        return a
+    
+    def len(self):
+        """Return the number of service lines (not templates) in the database"""
+        now_t = self.__valid_utc()
+        try:
+            i = self.services.count().where(now_t)
+        except _sa.exc.SQLAlchemyError as e:
+            print e
+            raise
+        c = self.connection.execute(i)
+        return c.scalar()
+
     def save(self, table_name):
         """Persist (commit) changes to the database indicated"""
         return
@@ -198,7 +225,7 @@ class service_template:
     def update(self, k_selection, k_update):
         """Update rows matched in k_selection with fields k_update"""
         a = self.__kwarg2sel(**k_selection)
-        a = a + "and st_valid_from<=utc_timestamp() and st_valid_to > utc_timestamp()"
+        a = a + " and " + self.__valid_utc()
         i = self.services.update().where(a).values(k_update)
         return self.connection.execute(i)
 
@@ -220,27 +247,6 @@ class service_template:
         i = self.services.update().where(a).values(st_valid_to=end_t)
         return self.connection.execute(i)
 
-    def len(self):
-        """Return the number of service lines (not templates) in the database"""
-        now_t = "%s.st_valid_from <= utc_timestamp() and %s.st_valid_to > utc_timestamp()" % \
-                (self.table_name, self.table_name)
-        try:
-            i = self.services.count().where(now_t)
-        except _sa.exc.SQLAlchemyError as e:
-            print e
-            raise
-        c = self.connection.execute(i)
-        return c.scalar()
-
-    def __kwarg2sel(self, **kwargs):
-        """Given a set of kwargs, convert to a select statement"""
-        a = ''
-        andp = ''
-        for k in kwargs:
-            a = a + andp + "%s.%s = \'%s\'" % (self.table_name, k, kwargs[k])
-            andp = " and "
-        return a
-
     def select(self, **kwargs):
         """Select a subset of services, indicated by the field/value criteria"""
         a = self.__kwarg2sel(**kwargs)
@@ -248,8 +254,7 @@ class service_template:
         if len(a):
             andp = " and "
         # limit searches to current records
-        a = a + andp + "%s.st_valid_from <= utc_timestamp() and %s.st_valid_to > utc_timestamp()" % \
-            (self.table_name, self.table_name)
+        a = a + andp + self.__valid_utc()
         try:
             s = self.services.select().where(a)
             rows = self.connection.execute(s)
@@ -312,6 +317,30 @@ class policy_group:
                     "defined in table", self.table_name
                 sys.exit(1)
 
+    def __valid_utc(self):
+        return "%s.p_valid_from<=utc_timestamp() and %s.p_valid_to > utc_timestamp()" % \
+            (self.table_name, self.table_name)
+
+    def __kwarg2sel(self, **kwargs):
+        """Given a set of kwargs, convert to a select statement"""
+        a = ''
+        andp = ''
+        for k in kwargs:
+            a = a + andp + "%s.%s = \'%s\'" % (self.table_name, k, kwargs[k])
+            andp = " and "
+        return a
+
+    def len(self):
+        """Return the number of overall members stored"""
+        now_t = self.__valid_utc()
+        try:
+            i = self.policies.count().where(now_t)
+        except _sa.exc.SQLAlchemyError as e:
+            print e
+            raise
+        c = self.connection.execute(i)
+        return c.scalar()
+
     def save(self, table_name):
         """Persist (commit) changes to the database indicated"""
         return
@@ -319,7 +348,7 @@ class policy_group:
     def update(self, k_selection, k_update):
         """Update rows matched in k_selection with fields k_update"""
         a = self.__kwarg2sel(**k_selection)
-        a = a + "and p_valid_from<=utc_timestamp() and p_valid_to>utc_timestamp()"
+        a = a + "and " + self.__valid_utc()
         i = self.policies.update().where(a).values(k_update)
         return self.connection.execute(i)
 
@@ -341,27 +370,6 @@ class policy_group:
         i = self.policies.update().where(a).values(p_valid_to=end_t)
         return self.connection.execute(i)
 
-    def len(self):
-        """Return the number of overall members stored"""
-        now_t = "%s.p_valid_from <= utc_timestamp() and %s.p_valid_to > utc_timestamp()" % \
-                (self.table_name, self.table_name)
-        try:
-            i = self.policies.count().where(now_t)
-        except _sa.exc.SQLAlchemyError as e:
-            print e
-            raise
-        c = self.connection.execute(i)
-        return c.scalar()
-
-    def __kwarg2sel(self, **kwargs):
-        """Given a set of kwargs, convert to a select statement"""
-        a = ''
-        andp = ''
-        for k in kwargs:
-            a = a + andp + "%s.%s = \'%s\'" % (self.table_name, k, kwargs[k])
-            andp = " and "
-        return a
-
     def select(self, **kwargs):
         """Return an array of selected policy groups based on the
         arguments passed in"""
@@ -370,8 +378,7 @@ class policy_group:
         if len(a):
             andp = " and "
         # limit select to current records
-        a = a + andp + "%s.p_valid_from <= utc_timestamp() and %s.p_valid_to > utc_timestamp()" % \
-            (self.table_name, self.table_name)
+        a = a + andp + self.__valid_utc()
         try:
             s = self.policies.select().where(a)
             rows = self.connection.execute(s)
@@ -426,17 +433,9 @@ class policy_render:
                     "defined in table", self.table_name
                 sys.exit(1)
 
-    def len(self):
-        """Return the number of rendered policy lines in the database"""
-        now_t = "%s.sdp_valid_from <= utc_timestamp() and %s.sdp_valid_to > utc_timestamp()" % \
-                (self.table_name, self.table_name)
-        try:
-            i = self.sdp.count().where(now_t)
-        except _sa_exc.SQLAlchemyError as e:
-            print e
-            raise e
-        c = self.connection.execute(i)
-        return c.scalar()
+    def __valid_utc(self):
+        return "%s.sdp_valid_from<=utc_timestamp() and %s.sdp_valid_to > utc_timestamp()" % \
+            (self.table_name, self.table_name)
 
     def __kwarg2sel(self, **kwargs):
         """Given a set of kwargs, convert to a select statement"""
@@ -447,21 +446,16 @@ class policy_render:
             andp = " and "
         return a
 
-    def __iter__(self):
-        """Return an iterator structure for moving through the list of members"""
-        return list.__iter__(self._sdp_groups)
-
-    def fields(self):
-        """Return the relevant member fields, in order"""
-        return self._sdp_fields
-
-    def zero(self):
-        """Reset/clear the rendered policy data"""
-        # note that a "self.sdp.delete()" is different from "self.delete({})".  The
-        # self.sdp.delete() is a SQL (alchemy) operator to delete all rows, whereas
-        # self.delete({}) leaves the rows but updates the timestamps
-        s = self.delete({})   # delete method tombstones it all
-        return s
+    def len(self):
+        """Return the number of rendered policy lines in the database"""
+        now_t = self.__valid_utc()
+        try:
+            i = self.sdp.count().where(now_t)
+        except _sa_exc.SQLAlchemyError as e:
+            print e
+            raise e
+        c = self.connection.execute(i)
+        return c.scalar()
 
     def save(self, table_name):
         """Persist (commit) rendered policy to the database indicated"""
@@ -470,7 +464,7 @@ class policy_render:
     def update(self, k_selection, k_update):
         """Update rows matched in k_selection with fields k_update"""
         a = self.__kwarg2sel(**k_selection)
-        a = a + "and sdp_valid_from<=utc_timestamp() and sdp_valid_to>utc_timestamp()"
+        a = a + "and " + self.__valid_utc()
         i = self.sdp.update().where(a).values(k_update)
         return self.connection.execute(i)
 
@@ -484,6 +478,14 @@ class policy_render:
         kwargs['sdp_valid_to'] = '2038-01-01 00:00:00'
         i = self.sdp.insert(values=kwargs)
         return self.connection.execute(i)
+
+    def zero(self):
+        """Reset/clear the rendered policy data"""
+        # note that a "self.sdp.delete()" is different from "self.delete({})".  The
+        # self.sdp.delete() is a SQL (alchemy) operator to delete all rows, whereas
+        # self.delete({}) leaves the rows but updates the timestamps
+        s = self.delete({})   # delete method tombstones it all
+        return s
 
     def delete(self, d):
         """Delete the SDP line from the database"""
@@ -499,8 +501,7 @@ class policy_render:
         if len(a):
             andp = " and "
         # limit selects to current records
-        a = a + andp + "%s.sdp_valid_from <= utc_timestamp() and %s.sdp_valid_to > utc_timestamp()" % \
-            (self.table_name, self.table_name)
+        a = a + andp + self.__valid_utc()
         try:
             s = self.sdp.select().where(a)
             rows = self.connection.execute(s)
@@ -512,6 +513,15 @@ class policy_render:
             r.append(dict(row).copy())
         self._sdp_groups = r
         return r
+
+    def __iter__(self):
+        """Return an iterator structure for moving through the list of members"""
+        return list.__iter__(self._sdp_groups)
+
+    def fields(self):
+        """Return the relevant member fields, in order"""
+        return self._sdp_fields
+
 
 ####################
 if __name__ == '__main__':
