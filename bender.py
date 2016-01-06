@@ -34,7 +34,7 @@ class host_group:
         """
 
         self.table_name = table_name
-        engine, table_name = uri.split(':')
+        engine, table_name = uri.split('://')
         # Open, Peek into the CSV, and create DictReader
         try:
             reader_fd = io.open(table_name, 'rb')
@@ -125,7 +125,7 @@ class service_template:
         field names to generate dictionary objects that can be managed."""
 
         self.table_name = table_name
-        engine, table_name = uri.split(':')
+        engine, table_name = uri.split('://')
         # Open, Peek into the CSV, and create DictReader
         try:
             reader_fd = io.open(table_name, 'rb')
@@ -214,7 +214,7 @@ class policy_group:
         to generate a list of dictionary objects that can be managed."""
 
         self.table_name = table_name
-        engine, table_name = uri.split(':')
+        engine, table_name = uri.split('://')
         # Open, peek into the CSV and create DictReader
         try:
             reader_fd = io.open(table_name, 'rb')
@@ -300,7 +300,7 @@ class policy_render:
         """Define the rendered policies in the named database."""
 
         self.table_name = table_name
-        engine, table_name = uri.split(':')
+        engine, table_name = uri.split('://')
 
         try:
             sdp_fd = io.open(table_name, 'rb')

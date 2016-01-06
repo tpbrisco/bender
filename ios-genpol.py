@@ -6,7 +6,7 @@
 #                              or might notice adjacent port numbers, and adjust accordingly
 
 import sys
-import bender
+import bender as bender
 
 if len(sys.argv) < 2:
     print "Usage: ios-genpol <policy name>"
@@ -17,8 +17,8 @@ policy = sys.argv[1]
 # next isn't needed, as we encode the filename as the "database" in the CSV version
 # pol_db_cfg = bender.read_config("database",['/etc/bender.cf','bender.cf'])
 
-p_groups =  bender.policy_group('testdata/mock-poldb.csv')
-sdp_groups = bender.policy_render('testdata/mock-sdpdb.csv')
+p_groups =  bender.policy_group('csv://testdata/mock-poldb.csv', 'policy')
+sdp_groups = bender.policy_render('csv://testdata/mock-sdpdb.csv', 'sdp')
 
 # we check the policy groups to make sure it exists at all.
 policy_lines = p_groups.select(p_name=policy)

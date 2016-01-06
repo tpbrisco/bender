@@ -8,7 +8,7 @@
 # host groups, this will be much cleaner to read.
 
 import sys
-import bender_sql as bender
+import bender_obj as bender
 
 if len(sys.argv) < 2:
     print "Usage: asa-genpol <policy name>"

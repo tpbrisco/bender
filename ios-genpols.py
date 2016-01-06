@@ -6,7 +6,7 @@
 #                              or might notice adjacent port numbers, and adjust accordingly
 
 import sys
-import bender_sql as bender
+import bender_obj as bender
 
 if len(sys.argv) < 2:
     print "Usage: ios-genpol <policy name>"

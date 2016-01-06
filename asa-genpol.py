@@ -8,7 +8,7 @@
 # host groups, this will be much cleaner to read.
 
 import sys
-import bender
+import bender as bender
 
 if len(sys.argv) < 2:
     print "Usage: asa-genpol <policy name>"
@@ -16,9 +16,9 @@ if len(sys.argv) < 2:
 
 policy = sys.argv[1]
 
-p_groups = bender.policy_group('testdata/mock-poldb.csv')
-h_groups = bender.host_group('testdata/mock-hostdb.csv')
-s_groups = bender.service_template('testdata/mock-svcdb.csv')
+p_groups = bender.policy_group('csv://testdata/mock-poldb.csv', 'policy')
+h_groups = bender.host_group('csv://testdata/mock-hostdb.csv', 'hostgroups')
+s_groups = bender.service_template('csv://testdata/mock-svcdb.csv', 'sdp')
 
 policy_lines = p_groups.select(p_name=policy)
 if len(policy_lines) == 0:
