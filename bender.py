@@ -26,13 +26,15 @@ class host_group:
     _host_fields = ()     # set of field names
     _host_dialect = ''    # dialect of CSV file
 
-    def __init__(self, table_name):
+    def __init__(self, uri, table_name):
         """Define the host group based on the fields in the table_name.
 
        Peeking into the database to get all columns; use the field names
         to generate a list of dictionary objects that can be managed.
         """
 
+        self.table_name = table_name
+        engine, table_name = uri.split(':')
         # Open, Peek into the CSV, and create DictReader
         try:
             reader_fd = io.open(table_name, 'rb')
@@ -115,13 +117,15 @@ class service_template:
     _svc_fields = ()     # set of field names
     _svc_dialect = ''    # dialect of CSV
 
-    def __init__(self, table_name):
+    def __init__(self, uri, table_name):
         """Define the service_template based on the columns in the
         database.
 
         Peeking into the database to get all columns; use the
         field names to generate dictionary objects that can be managed."""
 
+        self.table_name = table_name
+        engine, table_name = uri.split(':')
         # Open, Peek into the CSV, and create DictReader
         try:
             reader_fd = io.open(table_name, 'rb')
@@ -203,12 +207,14 @@ class policy_group:
     _policy_fields = ()    # set of field names
     _policy_dialect = ''   # dialect of CSV
 
-    def __init__(self, table_name):
+    def __init__(self, uri, table_name):
         """Define the policy group based on the fields in the table_name.
 
         Peeking into the database to get all columns; use the field names
         to generate a list of dictionary objects that can be managed."""
 
+        self.table_name = table_name
+        engine, table_name = uri.split(':')
         # Open, peek into the CSV and create DictReader
         try:
             reader_fd = io.open(table_name, 'rb')
@@ -290,8 +296,11 @@ class policy_render:
     _sdp_fields = ()     # set of field names
     _sdp_dialect = ''    # remember dialect type
 
-    def __init__(self, table_name):
+    def __init__(self, uri,  table_name):
         """Define the rendered policies in the named database."""
+
+        self.table_name = table_name
+        engine, table_name = uri.split(':')
 
         try:
             sdp_fd = io.open(table_name, 'rb')

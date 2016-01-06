@@ -1,4 +1,4 @@
-st_name,st_port,st_protocol,st_transport,st_bidir,st_owner,st_rp,st_valid-from,st_valid-to,st_wfid
+st_name,st_port,st_protocol,st_transport,st_bidir,st_owner,st_rp,st_valid_from,st_valid_to,st_wfid
 email,25,tcp,smtp,TRUE,tom,tom,1970-01-01 00:00:01,2038-01-01 00:00:00,
 email,25,udp,smtp,TRUE,tom,tom,1970-01-01 00:00:01,2038-01-01 00:00:00,
 email,465,tcp,smtp,TRUE,tom,tom,1970-01-01 00:00:01,2038-01-01 00:00:00,

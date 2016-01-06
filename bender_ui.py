@@ -7,7 +7,7 @@ While this version uses a CSV files, it should be easily
 extensible to use more conventional databases.
 """
 
-import bender
+import bender_obj as bender
 import socket
 
 from flask import Flask, request, url_for, render_template, redirect
@@ -15,10 +15,10 @@ from flask import Flask, request, url_for, render_template, redirect
 b_ui = Flask(__name__, static_url_path='/static')
 
 # Load the demo databases from mock data
-hg = bender.host_group('mockdata/mock-hostdb.csv')
-sg = bender.service_template('mockdata/mock-svcdb.csv')
-pg = bender.policy_group('mockdata/mock-poldb.csv')
-sdp = bender.policy_render('mockdata/mock-sdpdb.csv')
+hg = bender.host_group('csv://mockdata/mock-hostdb.csv','hostgroups')
+sg = bender.service_template('csv://mockdata/mock-svcdb.csv','service_templates')
+pg = bender.policy_group('csv://mockdata/mock-poldb.csv', 'policy')
+sdp = bender.policy_render('csv://mockdata/mock-sdpdb.csv', 'sdp')
 
 # gethostaddr - similar to socket.gethostbyname() - but use getaddrinfo() to deal
 # with IPv6 addresses

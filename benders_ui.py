@@ -7,7 +7,7 @@ While this version uses a CSV files, it should be easily
 extensible to use more conventional databases.
 """
 
-import bender_sql as bender
+import bender_obj as bender
 import socket, sys
 
 from flask import Flask, request, url_for, render_template, redirect
@@ -48,10 +48,10 @@ else:
     db_uri = db_cfg['uri']
 
 # Load the databases
-hg = bender.host_group(db_uri,'hostgroups')
-sg = bender.service_template(db_uri,'service_templates')
-pg = bender.policy_group(db_uri,'policy')
-sdp = bender.policy_render(db_uri,'sdp')
+hg = bender.host_group(db_uri, 'hostgroups')
+sg = bender.service_template(db_uri, 'service_templates')
+pg = bender.policy_group(db_uri, 'policy')
+sdp = bender.policy_render(db_uri, 'sdp')
 
 # 
 # Set up Flask main page, which has links to everything else
@@ -79,7 +79,6 @@ def index_hostgroups():
         p_info.append(p.copy())
     for sd in sorted(sdp.select(), key=lambda k: k['sdp_group']):
         sdp_info.append(sd.copy())
-    print "Render:",service_err
     return render_template('benders_index.html',
                            groupinfo=r_info, hg_error=hostgroup_err,
                            svcinfo=q_info, svc_error=service_err,
@@ -245,7 +244,8 @@ def render_sdp():
     errors = ''
     errors_nl = ''
     # regenerate what we need
-    for p in pg:
+    for p in pg.select():
+        # print "\t%s policy groups" % (len(p))
         for src in hg.select(hg_name=p['p_source']):
             for dst in hg.select(hg_name=p['p_destination']):
                 for svc in sg.select(st_name=p['p_template']):
@@ -260,7 +260,7 @@ def render_sdp():
                         errors_nl = '\r\n'
                         continue  # just skip it?
                     if src['hg_member'] != dst['hg_member']:
-                        # print "\tSDP Add:", src['member'], "and", dst['member'], "for", svc['name']
+                        # print "\tSDP Add:", src['hg_member'], "and", dst['hg_member'], "for", svc['st_name']
                         sdp.add(sdp_group=p['p_name'],
                                 sdp_name=name,
                                 sdp_source=src['hg_member'],
