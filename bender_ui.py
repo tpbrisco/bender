@@ -108,6 +108,7 @@ def save_group():
     hg.save("mockdata/mock-hostdb.csv")
     return redirect(url_for('index_hostgroups')+"#groups")
 
+
 #####################################################
 # service management
 #####################################################
