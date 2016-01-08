@@ -22,16 +22,16 @@ class host_group:
     This requires only a "name" (of the host group) and "member" be defined.
     A server may belong to multiple groups. """
 
-    _host_groups = []  # empty list of host_group dictionaries
-    _host_fields = ()     # set of field names
-    _host_dialect = ''    # dialect of CSV file
-
     def __init__(self, uri, table_name):
         """Define the host group based on the fields in the table_name.
 
        Peeking into the database to get all columns; use the field names
         to generate a list of dictionary objects that can be managed.
         """
+
+        self._host_groups = []  # empty list of host_group dictionaries
+        self._host_fields = ()     # set of field names
+        self._host_dialect = ''    # dialect of CSV file
 
         self.table_name = table_name
         engine, table_name = uri.split('://')
@@ -113,16 +113,16 @@ class service_template:
     protocols needed by an application.  Only 'name', 'port' and 'protocol'
     are required, though additional fields can help increase security."""
 
-    _svc_groups = []  # empty list of host_group dictionaries
-    _svc_fields = ()     # set of field names
-    _svc_dialect = ''    # dialect of CSV
-
     def __init__(self, uri, table_name):
         """Define the service_template based on the columns in the
         database.
 
         Peeking into the database to get all columns; use the
         field names to generate dictionary objects that can be managed."""
+
+        self._svc_groups = []  # empty list of host_group dictionaries
+        self._svc_fields = ()     # set of field names
+        self._svc_dialect = ''    # dialect of CSV
 
         self.table_name = table_name
         engine, table_name = uri.split('://')
@@ -203,15 +203,15 @@ class policy_group:
         "Source Group accesses Destination Group for Service"
     and gives a name to that statement."""
 
-    _policy_groups = [] # empty list of policy statements
-    _policy_fields = ()    # set of field names
-    _policy_dialect = ''   # dialect of CSV
-
     def __init__(self, uri, table_name):
         """Define the policy group based on the fields in the table_name.
 
         Peeking into the database to get all columns; use the field names
         to generate a list of dictionary objects that can be managed."""
+
+        self._policy_groups = [] # empty list of policy statements
+        self._policy_fields = ()    # set of field names
+        self._policy_dialect = ''   # dialect of CSV
 
         self.table_name = table_name
         engine, table_name = uri.split('://')
@@ -252,7 +252,7 @@ class policy_group:
         w_fd.close()
 
     def add(self, **kwargs):
-        """Add a new policy to the database, with the field values"""
+        """Add a new entry to the database, with the field values"""
         exists = self.select(**kwargs)    # will match partial
         for e in exists:
             self.delete(e)
@@ -292,12 +292,12 @@ class policy_render:
     the output of policy statements at a point in time.  Comparisons can
     then be made to determine if updates to the environment are necessary"""
 
-    _sdp_groups = []  # empty list of sdp dictionaries
-    _sdp_fields = ()     # set of field names
-    _sdp_dialect = ''    # remember dialect type
-
     def __init__(self, uri,  table_name):
         """Define the rendered policies in the named database."""
+
+        self._sdp_groups = []  # empty list of sdp dictionaries
+        self._sdp_fields = ()     # set of field names
+        self._sdp_dialect = ''    # remember dialect type
 
         self.table_name = table_name
         engine, table_name = uri.split('://')

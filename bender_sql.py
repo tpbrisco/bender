@@ -40,9 +40,6 @@ class host_group:
     This requires only a "name" (of the host group) and "member" be defined.
     A server may belong to multiple groups. """
 
-    _host_groups = []  # empty list of host_group dictionaries
-    _host_fields = []     # empty list of field names in the dictionary
-
     def __init__(self, engine_uri, table_name):
         """Define the host group based on the fields in the table_name.
 
@@ -50,6 +47,9 @@ class host_group:
         columns; use the field names to generate a list of dictionary objects
         that can be managed.
         """
+
+        self._host_groups = []  # empty list of host_group dictionaries
+        self._host_fields = []     # empty list of field names in the dictionary
 
         # Open, reflect on the database to determine fields
         try:
@@ -163,15 +163,15 @@ class service_template:
     protocols needed by an application.  Only 'name', 'port' and 'protocol'
     are required, though additional fields can help increase security."""
 
-    _svc_groups = []  # empty list of host_group dictionaries
-    _svc_fields = ()     # set of field names
-
     def __init__(self, engine_uri, table_name):
         """Define the service_template based on the columns in the
         database.
 
         Peeking into the database to get all columns; use the
         field names to generate dictionary objects that can be managed."""
+
+        self._svc_groups = []  # empty list of host_group dictionaries
+        self._svc_fields = ()     # set of field names
 
         # Open, Peek into the CSV, and create DictReader
         try:
@@ -287,14 +287,14 @@ class policy_group:
         "Source Group accesses Destination Group for Service"
     and gives a name to that statement."""
 
-    _policy_groups = [] # empty list of policy statements
-    _policy_fields = ()    # set of field names
-
     def __init__(self, engine_uri, table_name):
         """Define the policy group based on the fields in the table_name.
 
         Peeking into the database to get all columns; use the field names
         to generate a list of dictionary objects that can be managed."""
+
+        self._policy_groups = [] # empty list of policy statements
+        self._policy_fields = ()    # set of field names
 
         # Open, reflect on the database to get the columns
         try:
@@ -406,11 +406,11 @@ class policy_render:
     the output of policy statements at a point in time.  Comparisons can
     then be made to determine if updates to the environment are necessary"""
 
-    _sdp_groups = []  # empty list of sdp dictionaries
-    _sdp_fields = ()     # set of field names
-
     def __init__(self, engine_uri, table_name):
         """Define the rendered policies in the named database."""
+
+        self._sdp_groups = []  # empty list of sdp dictionaries
+        self._sdp_fields = ()     # set of field names
 
         try:
             self.meta_data = _sa.MetaData()

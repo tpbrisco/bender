@@ -7,7 +7,7 @@ While this version uses a CSV files, it should be easily
 extensible to use more conventional databases.
 """
 
-import bender_obj as bender
+import bender_sql as bender
 import socket, sys
 
 from flask import Flask, request, url_for, render_template, redirect
